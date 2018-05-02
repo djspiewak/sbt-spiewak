@@ -85,14 +85,22 @@ object SpiewakPlugin extends AutoPlugin {
 
   import autoImport._
 
-  override def globalSettings = Seq(
-    pgpSecretRing in Global := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
-    useGpg := true)
-
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("release", "; reload; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
     addCommandAlias("ci", "; clean; +test") ++
+    {
+      // this needs to be here because sbt-pgp is written incorrectly and uses inScope(Global) in buildSettings
+      import com.typesafe.sbt.pgp._
+
+      inScope(Global)(Seq(
+        pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
+        useGpg := true,
+
+        // workaround for other madness in sbt-pgp
+        pgpSigner := new CommandLineGpgSigner(gpgCommand.value, useGpgAgent.value, pgpSecretRing.value.getPath, pgpSigningKey.value, pgpPassphrase.value),
+        pgpVerifierFactory := new BouncyCastlePgpVerifierFactory(pgpCmdContext.value)))
+    } ++
     Seq(
       organization := "com.codecommit",
       organizationName := "Daniel Spiewak",
