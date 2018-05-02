@@ -80,20 +80,50 @@ object SpiewakPlugin extends AutoPlugin {
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("release", "; reload; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
-    addCommandAlias("ci", "; clean; +test")
+    addCommandAlias("ci", "; clean; +test") ++
+    Seq(
+      organization := "com.codecommit",
+      organizationName := "Daniel Spiewak",
 
+      startYear := Some(2018),
+
+      licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
+
+      coursierUseSbtCredentials := true,
+      coursierChecksums := Nil,      // workaround for nexus sync bugs
+
+      pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
+      useGpg := true,
+
+      isSnapshot := version.value endsWith "SNAPSHOT",
+
+      credentials in bintray := {
+        val old = (credentials in bintray).value
+
+        if (isTravisBuild.value) Nil else old
+      },
+
+      pomIncludeRepository := { _ => false },
+
+      developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
+
+      git.gitTagToVersionNumber := {
+        case ReleaseTag(version) => Some(version)
+        case _ => None
+      },
+
+      git.formattedShaVersion := {
+        val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
+
+        git.gitHeadCommit.value map { _.substring(0, 7) } map { sha =>
+          git.baseVersion.value + "-" + sha + suffix
+        }
+      },
+
+      // jgit does weird things...
+      git.gitUncommittedChanges := "git status -s".!!.trim.length > 0)
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
-    organization := "com.codecommit",
-    organizationName := "Daniel Spiewak",
-
-    startYear := Some(2018),
-
-    licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
-
-    coursierUseSbtCredentials := true,
-    coursierChecksums := Nil,      // workaround for nexus sync bugs
-
     addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.6" cross CrossVersion.binary),
 
     // Adapted from Rob Norris' post at https://tpolecat.github.io/2014/04/11/scalac-flags.html
@@ -139,36 +169,5 @@ object SpiewakPlugin extends AutoPlugin {
         case "2.10.6" => Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
         case _ => Seq.empty
       }
-    },
-
-    useGpg := true,
-    pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
-
-    isSnapshot := version.value endsWith "SNAPSHOT",
-
-    credentials in bintray := {
-      val old = (credentials in bintray).value
-
-      if (isTravisBuild.value) Nil else old
-    },
-
-    pomIncludeRepository := { _ => false },
-
-    developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
-
-    git.gitTagToVersionNumber := {
-      case ReleaseTag(version) => Some(version)
-      case _ => None
-    },
-
-    git.formattedShaVersion := {
-      val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
-
-      git.gitHeadCommit.value map { _.substring(0, 7) } map { sha =>
-        git.baseVersion.value + "-" + sha + suffix
-      }
-    },
-
-    // jgit does weird things...
-    git.gitUncommittedChanges := "git status -s".!!.trim.length > 0)
+    })
 }
