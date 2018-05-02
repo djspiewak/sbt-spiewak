@@ -154,7 +154,6 @@ object SpiewakPlugin extends AutoPlugin {
 
     isSnapshot := version.value endsWith "SNAPSHOT",
 
-    publishMavenStyle := true,
     pomIncludeRepository := { _ => false },
 
     pomExtra :=
