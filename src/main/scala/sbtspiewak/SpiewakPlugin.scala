@@ -151,6 +151,7 @@ object SpiewakPlugin extends AutoPlugin {
     },
 
     useGpg := true,
+    pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
 
     isSnapshot := version.value endsWith "SNAPSHOT",
 

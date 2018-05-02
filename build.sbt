@@ -141,6 +141,7 @@ libraryDependencies ++= {
 }
 
 useGpg := true
+pgpSecretRing := pgpPublicRing.value
 
 enablePlugins(GitVersioning)
 
