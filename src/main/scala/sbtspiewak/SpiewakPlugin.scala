@@ -97,12 +97,6 @@ object SpiewakPlugin extends AutoPlugin {
     coursierUseSbtCredentials := true,
     coursierChecksums := Nil,      // workaround for nexus sync bugs
 
-    credentials in bintray := {
-      val old = (credentials in bintray).value
-
-      if (isTravisBuild.value) Nil else old
-    },
-
     addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.6" cross CrossVersion.binary),
 
     // Adapted from Rob Norris' post at https://tpolecat.github.io/2014/04/11/scalac-flags.html
@@ -154,6 +148,12 @@ object SpiewakPlugin extends AutoPlugin {
     pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
 
     isSnapshot := version.value endsWith "SNAPSHOT",
+
+    credentials in bintray := {
+      val old = (credentials in bintray).value
+
+      if (isTravisBuild.value) Nil else old
+    },
 
     pomIncludeRepository := { _ => false },
 

@@ -21,6 +21,8 @@ organization := "com.codecommit"
 
 name := "sbt-spiewak"
 
+bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
+
 sbtPlugin := true
 
 sbtVersion in Global := {
