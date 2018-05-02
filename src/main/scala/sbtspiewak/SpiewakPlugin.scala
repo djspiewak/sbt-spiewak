@@ -23,6 +23,7 @@ import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import coursier.Keys._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
+import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys._
 import sbttravisci.TravisCiPlugin.autoImport._
 
@@ -30,7 +31,7 @@ import scala.sys.process._
 
 object SpiewakPlugin extends AutoPlugin {
 
-  override def requires = plugins.JvmPlugin
+  override def requires = SbtPgp && plugins.JvmPlugin
   override def trigger = allRequirements
 
   object autoImport {
