@@ -77,11 +77,11 @@ object SpiewakPlugin extends AutoPlugin {
 
   import autoImport._
 
-  override def buildSettings = GitPlugin.autoImport.versionWithGit
-
-  override def globalSettings =
+  override def buildSettings =
+    GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("release", "; reload; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
     addCommandAlias("ci", "; clean; +test")
+
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
     organization := "com.codecommit",
