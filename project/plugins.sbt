@@ -1,7 +1,3 @@
-addSbtPlugin("io.get-coursier"   % "sbt-coursier" % "1.1.0-M1")
-addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.1.1")
-addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.9.3")
-addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "5.0.0")
+resolvers += Resolver.url("djspiewak-sbt-plugins", url("https://dl.bintray.com/djspiewak/sbt-plugins"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4")
-addSbtPlugin("com.jsuereth"      % "sbt-pgp"     % "1.1.1")
+addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.1-8079c80")
