@@ -27,7 +27,6 @@ import com.typesafe.sbt.pgp.PgpKeys._
 import sbttravisci.TravisCiPlugin.autoImport._
 
 import scala.sys.process._
-import scala.xml.NodeSeq
 
 object SpiewakPlugin extends AutoPlugin {
 
@@ -70,14 +69,10 @@ object SpiewakPlugin extends AutoPlugin {
      */
     lazy val baseVersion = git.baseVersion
 
-    lazy val developers = settingKey[Seq[Developer]]("List of developers on the project (for insertion into the pom)")
-
     def noPublishSettings = Seq(
       publish := {},
       publishLocal := {},
       publishArtifact := false)
-
-    final case class Developer(id: String, name: String, url: Option[String] = None)
   }
 
   import autoImport._
@@ -159,21 +154,7 @@ object SpiewakPlugin extends AutoPlugin {
 
     pomIncludeRepository := { _ => false },
 
-    pomExtra :=
-      <developers>
-        {
-          developers.value map {
-            case Developer(id, name, url) =>
-              <developer>
-                <id>{ id }</id>
-                <name>{ name }</name>
-                { url.map(u => <url>{ u }</url>).getOrElse(NodeSeq.Empty) }
-              </developer>
-          }
-        }
-      </developers>,
-
-    developers += Developer("djspiewak", "Daniel Spiewak", Some("http://www.codecommit.com")),
+    developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
 
     git.gitTagToVersionNumber := {
       case ReleaseTag(version) => Some(version)
