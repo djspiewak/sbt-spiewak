@@ -84,7 +84,9 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def buildSettings = GitPlugin.autoImport.versionWithGit
 
-  override def globalSettings = addCommandAlias("ci", "; clean; +test")
+  override def globalSettings =
+    addCommandAlias("release", "; reload; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
+    addCommandAlias("ci", "; clean; +test")
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
     organization := "com.codecommit",
