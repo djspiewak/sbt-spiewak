@@ -78,6 +78,10 @@ object SpiewakPlugin extends AutoPlugin {
 
   import autoImport._
 
+  override def globalSettings = Seq(
+    pgpSecretRing in Global := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
+    useGpg := true)
+
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("release", "; reload; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
@@ -92,9 +96,6 @@ object SpiewakPlugin extends AutoPlugin {
 
       coursierUseSbtCredentials := true,
       coursierChecksums := Nil,      // workaround for nexus sync bugs
-
-      pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
-      useGpg := true,
 
       isSnapshot := version.value endsWith "SNAPSHOT",
 
