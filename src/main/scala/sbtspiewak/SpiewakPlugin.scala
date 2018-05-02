@@ -31,7 +31,14 @@ import scala.sys.process._
 
 object SpiewakPlugin extends AutoPlugin {
 
-  override def requires = SbtPgp && plugins.JvmPlugin
+  override def requires =
+    GitPlugin &&
+    SbtPgp &&
+    sbttravisci.TravisCiPlugin &&
+    _root_.bintray.BintrayPlugin &&
+    coursier.CoursierPlugin &&
+    plugins.JvmPlugin
+
   override def trigger = allRequirements
 
   object autoImport {
