@@ -1,4 +1,4 @@
-# sbt-spiewak
+# sbt-spiewak [![Build Status](https://travis-ci.org/djspiewak/sbt-spiewak.svg?branch=master)](https://travis-ci.org/djspiewak/sbt-spiewak)
 
 This plugin basically just exists to allow me to more conveniently setup my baseline SBT configuration, which has evolved somewhat over the years, and is also becoming quite unwieldy when solely represented in [giter8 format](https://github.com/djspiewak/base.g8). **You probably shouldn't use this plugin.** If you do though, let me know how it works out!
 
