@@ -1,3 +1,3 @@
 resolvers += Resolver.url("djspiewak-sbt-plugins", url("https://dl.bintray.com/djspiewak/sbt-plugins"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.1-1193782")
+addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.1-e9c5e76")
