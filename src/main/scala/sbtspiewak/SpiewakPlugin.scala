@@ -129,20 +129,6 @@ object SpiewakPlugin extends AutoPlugin {
 
       developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
 
-      mimaPreviousArtifacts := {
-        val current = version.value
-
-        val TagBase = """^(\d+)\.(\d+).*"""r
-        val TagBase(major, minor) = baseVersion.value
-
-        val tags = "git tag --list".!!.split("\n").map(_.trim)
-
-        val versions =
-          tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
-
-        versions.filterNot(current ==).map(v => organization.value %% name.value % v).toSet
-      },
-
       git.gitTagToVersionNumber := {
         case ReleaseTag(version) => Some(version)
         case _ => None
@@ -205,5 +191,19 @@ object SpiewakPlugin extends AutoPlugin {
         case "2.10.6" => Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
         case _ => Seq.empty
       }
+    },
+
+    mimaPreviousArtifacts := {
+      val current = version.value
+
+      val TagBase = """^(\d+)\.(\d+).*"""r
+      val TagBase(major, minor) = baseVersion.value
+
+      val tags = "git tag --list".!!.split("\n").map(_.trim)
+
+      val versions =
+        tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
+
+      versions.filterNot(current ==).map(v => organization.value %% name.value % v).toSet
     })
 }
