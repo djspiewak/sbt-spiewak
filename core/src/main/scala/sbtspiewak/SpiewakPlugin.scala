@@ -182,9 +182,19 @@ object SpiewakPlugin extends AutoPlugin {
     },
 
     scalacOptions ++= {
+      val Scala11Version = """^2\.11\.(\d+)$""".r
+
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, major)) if major >= 12 || scalaVersion.value == "2.11.11" =>
+        case Some((2, major)) if major >= 12 =>
           Seq("-Ypartial-unification")
+
+        case Some((2, 11)) =>
+          val Scala11Version(build) = scalaVersion.value
+
+          if (build.toInt >= 11)
+            Seq("-Ypartial-unification")
+          else
+            Seq.empty
 
         case _ => Seq.empty
       }
