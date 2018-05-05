@@ -10,13 +10,13 @@ Put this in your `plugins.sbt`:
 resolvers += Resolver.url("djspiewak-sbt-plugins", url("https://dl.bintray.com/djspiewak/sbt-plugins"))(Resolver.ivyStylePatterns)
 
 // for stock functionality (no publication defaults)
-addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.3.2")
+addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.3.3")
 
 // publishing to bintray
-addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.3.2")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.3.3")
 
 // publishing to sonatype
-addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "0.3.2")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "0.3.3")
 ```
 
 Then, in your `build.sbt`, make sure you set a value for `baseVersion`:
@@ -47,6 +47,7 @@ Or something like that.
     * Infers previous versions by using git tags
     * Automatically runs on `ci` and `release`
 - Sane scalac settings
+  + Including `-Ybackend-parallelism` where supported
 - SI-2712 fix across scala versions (dating back to 2.10)
 - kind-projector
 - `release` and `ci` command aliases
