@@ -82,7 +82,10 @@ object SpiewakPlugin extends AutoPlugin {
     def noPublishSettings = Seq(
       publish := {},
       publishLocal := {},
-      publishArtifact := false)
+      publishArtifact := false,
+
+      mimaPreviousArtifacts := Set.empty,
+      bintrayEnsureBintrayPackageExists := {})
   }
 
   import autoImport._
