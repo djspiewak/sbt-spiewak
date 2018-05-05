@@ -9,7 +9,14 @@ Put this in your `plugins.sbt`:
 ```sbt
 resolvers += Resolver.url("djspiewak-sbt-plugins", url("https://dl.bintray.com/djspiewak/sbt-plugins"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.1")
+// for stock functionality (no publication defaults)
+addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.3.1")
+
+// publishing to bintray
+addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.3.1")
+
+// publishing to sonatype
+addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "0.3.1")
 ```
 
 Then, in your `build.sbt`, make sure you set a value for `baseVersion`:
@@ -30,8 +37,10 @@ Or something like that.
     * Also with fixed `git-status` stuff
   + sbt-header
     * Assumes Apache 2.0 license
-  + sbt-bintray
+  + sbt-bintray (or sonatype!)
     * With fixed support for Travis builds
+  + sbt-sonatype (or bintray!)
+    * With fixed snapshot publication URLs
   + sbt-pgp
     * Fixes most of the glitches and bugs related to sbt-pgp's setting scoping and default configuration
 - Sane scalac settings
