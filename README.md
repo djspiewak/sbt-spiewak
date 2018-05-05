@@ -54,3 +54,38 @@ Or something like that.
   + Performs sonatype release steps
 - Hard-coded defaults which assume `com.codecommit` and `Daniel Spiewak` in all the places
   + ...this is totally a feature!
+
+### Bintray Requirements
+
+You will need to additionally define the following setting:
+
+```sbt
+bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
+```
+
+### Sonatype Requirements
+
+You will additionally need to define the following settings:
+
+```sbt
+homepage in Global := Some(url("https://github.com/djspiewak/sbt-spiewak")),
+
+scmInfo in Global := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewak"),
+  "git@github.com:djspiewak/sbt-spiewak.git")))
+```
+
+## Defaults Which You May Wish to Override...
+
+Everything is basically hard-coded to assume you are me. If you are not me, then you should override the following keys:
+
+```sbt
+organization := "com.my.groupId"
+organizationName := "John Smith"
+
+developers := Developer("johnsmith", "John Smith", "@johnsmith", url("https://github.com/johnsmith"))
+
+// if using sonatype...
+sonatypeProfileName := "com.my.groupId"
+```
+
+You may also wish to override `licenses` and/or `startYear` if you aren't using Apache 2.0 and/or the year is not 2018.
