@@ -16,7 +16,7 @@
 
 name := "sbt-spiewak"
 
-baseVersion := "0.1"
+baseVersion := "0.2"
 
 bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
@@ -29,10 +29,11 @@ sbtVersion in Global := {
   }
 }
 
-addSbtPlugin("io.get-coursier"   % "sbt-coursier" % "1.1.0-M1")
-addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.1.1")
-addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.9.3")
-addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "5.0.0")
+addSbtPlugin("io.get-coursier"   % "sbt-coursier"    % "1.1.0-M1")
+addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1")
+addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
+addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0")
+addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.2.0")
 
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4")
 addSbtPlugin("com.jsuereth"      % "sbt-pgp"     % "1.1.1")

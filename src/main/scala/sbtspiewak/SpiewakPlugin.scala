@@ -23,9 +23,10 @@ import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import coursier.Keys._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
+import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
 import com.typesafe.sbt.SbtPgp
 import com.typesafe.sbt.pgp.PgpKeys._
-import sbttravisci.TravisCiPlugin.autoImport._
+import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
 
 import scala.sys.process._
 
@@ -34,7 +35,8 @@ object SpiewakPlugin extends AutoPlugin {
   override def requires =
     GitPlugin &&
     SbtPgp &&
-    sbttravisci.TravisCiPlugin &&
+    TravisCiPlugin &&
+    MimaPlugin &&
     _root_.bintray.BintrayPlugin &&
     coursier.CoursierPlugin &&
     plugins.JvmPlugin
@@ -87,8 +89,8 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
-    addCommandAlias("release", "; reload; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
-    addCommandAlias("ci", "; clean; +test") ++
+    addCommandAlias("release", "; reload; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
+    addCommandAlias("ci", "; clean; test; mimaReportBinaryIssues") ++
     {
       // this needs to be here because sbt-pgp is written incorrectly and uses inScope(Global) in buildSettings
       import com.typesafe.sbt.pgp._
@@ -123,6 +125,20 @@ object SpiewakPlugin extends AutoPlugin {
       pomIncludeRepository := { _ => false },
 
       developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
+
+      mimaPreviousArtifacts := {
+        val current = version.value
+
+        val TagBase = """^(\d+)\.(\d+).*"""r
+        val TagBase(major, minor) = baseVersion.value
+
+        val tags = "git tag --list".!!.split("\n").map(_.trim)
+
+        val versions =
+          tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
+
+        versions.filterNot(current ==).map(v => organization.value %% name.value % v).toSet
+      },
 
       git.gitTagToVersionNumber := {
         case ReleaseTag(version) => Some(version)
