@@ -44,7 +44,6 @@ object SpiewakPlugin extends AutoPlugin {
   object autoImport {
     // strictly x.y.z
     val ReleaseTag = """^v((?:\d+\.){2}\d+)$""".r
-    val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
 
     /*
      * Compatibility version.  Use this to declare what version with
@@ -89,6 +88,8 @@ object SpiewakPlugin extends AutoPlugin {
   }
 
   import autoImport._
+
+  private val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
