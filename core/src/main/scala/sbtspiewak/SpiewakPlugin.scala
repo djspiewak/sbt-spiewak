@@ -206,15 +206,21 @@ object SpiewakPlugin extends AutoPlugin {
 
     mimaPreviousArtifacts := {
       val current = version.value
+      val org = organization.value
+      val n = name.value
 
       val TagBase = """^(\d+)\.(\d+).*"""r
       val TagBase(major, minor) = baseVersion.value
 
-      val tags = "git tag --list".!!.split("\n").map(_.trim)
+      if (sbtPlugin.value) {
+        Set.empty
+      } else {
+        val tags = "git tag --list".!!.split("\n").map(_.trim)
 
-      val versions =
-        tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
+        val versions =
+          tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
 
-      versions.filterNot(current ==).map(v => organization.value %% name.value % v).toSet
+        versions.filterNot(current ==).map(v => org %% n % v).toSet
+      }
     })
 }
