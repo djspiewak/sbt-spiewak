@@ -201,6 +201,45 @@ object SpiewakPlugin extends AutoPlugin {
       }
     },
 
+    scalacOptions ++= {
+      val Scala12Version = """^2\.12\.(\d+)$""".r
+      val Scala13MVersion = """^2\.13\.(\d+)-M(\d+).*""".r
+
+      val numCPUs = java.lang.Runtime.getRuntime.availableProcessors()
+      val settings = Seq(s"-Ybackend-parallelism", numCPUs.toString)
+
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 12)) =>
+          val Scala12Version(build) = scalaVersion.value
+
+          if (build.toInt >= 5)
+            settings
+          else
+            Seq.empty
+
+        case Some((2, 13)) =>
+          scalaVersion.value match {
+            case Scala13MVersion(_, milestone) =>
+              // it was introduced in 2.13.0-M4
+              if (milestone.toInt >= 4)
+                settings
+              else
+                Seq.empty
+
+            // anything in 2.13 which is NOT a milestone will have the setting
+            case _ =>
+              settings
+          }
+
+        case Some((2, major)) if major > 13 =>
+          settings
+
+        // anything prior to 2.12 will lack the setting
+        case _ =>
+          Seq.empty
+      }
+    },
+
     scalacOptions in Test += "-Yrangepos",
 
     scalacOptions in (Compile, console) ~= (_ filterNot (Set("-Xfatal-warnings", "-Ywarn-unused-import").contains)),
