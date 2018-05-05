@@ -44,6 +44,7 @@ object SpiewakPlugin extends AutoPlugin {
   object autoImport {
     // strictly x.y.z
     val ReleaseTag = """^v((?:\d+\.){2}\d+)$""".r
+    val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
 
     /*
      * Compatibility version.  Use this to declare what version with
@@ -122,8 +123,19 @@ object SpiewakPlugin extends AutoPlugin {
       developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
 
       git.gitTagToVersionNumber := {
-        case ReleaseTag(version) => Some(version)
-        case _ => None
+        val log = sLog.value
+
+        {
+          case ReleaseTag(version) =>
+            Some(version)
+
+          case DeprecatedReleaseTag(version) =>
+            log.warn(s"ignoring non-semver-compliant version: $version")
+            None
+
+          case _ =>
+            None
+        }
       },
 
       git.formattedShaVersion := {
