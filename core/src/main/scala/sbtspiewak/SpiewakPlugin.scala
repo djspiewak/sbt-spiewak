@@ -18,7 +18,6 @@ package sbtspiewak
 
 import sbt._, Keys._
 
-import bintray.BintrayKeys._
 import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import coursier.Keys._
@@ -37,7 +36,6 @@ object SpiewakPlugin extends AutoPlugin {
     SbtPgp &&
     TravisCiPlugin &&
     MimaPlugin &&
-    _root_.bintray.BintrayPlugin &&
     coursier.CoursierPlugin &&
     plugins.JvmPlugin
 
@@ -85,14 +83,13 @@ object SpiewakPlugin extends AutoPlugin {
       publishArtifact := false,
 
       mimaPreviousArtifacts := Set.empty,
-      bintrayEnsureBintrayPackageExists := {})
+      skip in publish := true)
   }
 
   import autoImport._
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
-    addCommandAlias("release", "; reload; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publishSigned") ++
     addCommandAlias("ci", "; clean; test; mimaReportBinaryIssues") ++
     {
       // this needs to be here because sbt-pgp is written incorrectly and uses inScope(Global) in buildSettings
@@ -118,12 +115,6 @@ object SpiewakPlugin extends AutoPlugin {
       coursierChecksums := Nil,      // workaround for nexus sync bugs
 
       isSnapshot := version.value endsWith "SNAPSHOT",
-
-      credentials in bintray := {
-        val old = (credentials in bintray).value
-
-        if (isTravisBuild.value) Nil else old
-      },
 
       pomIncludeRepository := { _ => false },
 

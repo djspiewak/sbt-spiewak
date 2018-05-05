@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-name := "sbt-spiewak"
+baseVersion in Global := "0.3"
 
-baseVersion := "0.2"
+bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
-bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
-
-sbtPlugin := true
+sbtPlugin in Global := true
 
 sbtVersion in Global := {
   scalaBinaryVersion.value match {
@@ -29,11 +27,33 @@ sbtVersion in Global := {
   }
 }
 
-addSbtPlugin("io.get-coursier"   % "sbt-coursier"    % "1.1.0-M1")
-addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1")
-addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
-addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0")
-addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.2.0")
+lazy val root = project
+  .aggregate(core, bintray, sonatype)
+  .in(file("."))
+  .settings(name := "root")
+  .settings(noPublishSettings)
 
-addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4")
-addSbtPlugin("com.jsuereth"      % "sbt-pgp"     % "1.1.1")
+lazy val core = project
+  .in(file("core"))
+  .settings(name := "sbt-spiewak")
+  .settings(
+    addSbtPlugin("io.get-coursier"   % "sbt-coursier"    % "1.1.0-M1"),
+    addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1"),
+    addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3"),
+    addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0"),
+    addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.2.0"),
+    addSbtPlugin("com.jsuereth"      % "sbt-pgp"         % "1.1.1"))
+
+lazy val bintray = project
+  .in(file("bintray"))
+  .dependsOn(core)
+  .settings(name := "sbt-spiewak-bintray")
+  .settings(
+    addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4"))
+
+lazy val sonatype = project
+  .in(file("sonatype"))
+  .dependsOn(core)
+  .settings(name := "sbt-spiewak-sonatype")
+  .settings(
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.3"))
