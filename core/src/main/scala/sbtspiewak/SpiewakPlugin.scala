@@ -42,7 +42,8 @@ object SpiewakPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   object autoImport {
-    val ReleaseTag = """^v([\d\.]+)$""".r
+    // strictly x.y.z
+    val ReleaseTag = """^v((?:\d+\.){2}\d+)$""".r
 
     /*
      * Compatibility version.  Use this to declare what version with
