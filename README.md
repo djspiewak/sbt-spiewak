@@ -43,9 +43,14 @@ Or something like that.
     * With fixed snapshot publication URLs
   + sbt-pgp
     * Fixes most of the glitches and bugs related to sbt-pgp's setting scoping and default configuration
+  + sbt-mima
+    * Infers previous versions by using git tags
+    * Automatically runs on `ci` and `release`
 - Sane scalac settings
 - SI-2712 fix across scala versions (dating back to 2.10)
 - kind-projector
 - `release` and `ci` command aliases
+  + Ensures bintray package existence
+  + Performs sonatype release steps
 - Hard-coded defaults which assume `com.codecommit` and `Daniel Spiewak` in all the places
   + ...this is totally a feature!
