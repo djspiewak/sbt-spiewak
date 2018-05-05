@@ -185,7 +185,7 @@ object SpiewakPlugin extends AutoPlugin {
       val Scala11Version = """^2\.11\.(\d+)$""".r
 
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, major)) if major >= 12 =>
+        case Some((2, 12)) =>
           Seq("-Ypartial-unification")
 
         case Some((2, 11)) =>
@@ -196,6 +196,7 @@ object SpiewakPlugin extends AutoPlugin {
           else
             Seq.empty
 
+        // note that -Ypartial-unification is defaulted on 2.13
         case _ => Seq.empty
       }
     },
