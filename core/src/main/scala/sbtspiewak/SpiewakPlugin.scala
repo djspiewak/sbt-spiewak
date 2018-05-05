@@ -172,69 +172,47 @@ object SpiewakPlugin extends AutoPlugin {
     },
 
     scalacOptions ++= {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, major)) if major >= 11 => Seq(
-          "-Ywarn-unused-import", // Not available in 2.10
-          "-Ywarn-numeric-widen" // In 2.10 this produces a some strange spurious error
-        )
+      scalaVersion.value match {
+        case FullScalaVersion(2, minor, _, _, _) if minor >= 11 =>
+          Seq(
+            "-Ywarn-unused-import", // Not available in 2.10
+            "-Ywarn-numeric-widen") // In 2.10 this produces a some strange spurious error
+
         case _ => Seq.empty
       }
     },
 
     scalacOptions ++= {
-      val Scala11Version = """^2\.11\.(\d+)$""".r
-
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 12)) =>
+      scalaVersion.value match {
+        case FullScalaVersion(2, 12, _, _, _) =>
           Seq("-Ypartial-unification")
 
-        case Some((2, 11)) =>
-          val Scala11Version(build) = scalaVersion.value
+        case FullScalaVersion(2, 11, build, _, _) if build >= 11 =>
+          Seq("-Ypartial-unification")
 
-          if (build.toInt >= 11)
-            Seq("-Ypartial-unification")
-          else
-            Seq.empty
+        case FullScalaVersion(2, 13, 0, Some(milestone), qualifier) if milestone < 4 || (milestone == 4 && qualifier.isDefined) =>
+          Seq("-Ypartial-unification")
 
-        // note that -Ypartial-unification is defaulted on 2.13
-        case _ => Seq.empty
+        case _ =>
+          Seq.empty
       }
     },
 
     scalacOptions ++= {
-      val Scala12Version = """^2\.12\.(\d+)$""".r
-      val Scala13MVersion = """^2\.13\.(\d+)-M(\d+).*""".r
-
       val numCPUs = java.lang.Runtime.getRuntime.availableProcessors()
       val settings = Seq(s"-Ybackend-parallelism", numCPUs.toString)
 
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 12)) =>
-          val Scala12Version(build) = scalaVersion.value
-
-          if (build.toInt >= 5)
-            settings
-          else
-            Seq.empty
-
-        case Some((2, 13)) =>
-          scalaVersion.value match {
-            case Scala13MVersion(_, milestone) =>
-              // it was introduced in 2.13.0-M4
-              if (milestone.toInt >= 4)
-                settings
-              else
-                Seq.empty
-
-            // anything in 2.13 which is NOT a milestone will have the setting
-            case _ =>
-              settings
-          }
-
-        case Some((2, major)) if major > 13 =>
+      scalaVersion.value match {
+        case FullScalaVersion(2, 12, build, _, _) if build >= 5 =>
           settings
 
-        // anything prior to 2.12 will lack the setting
+        // setting was introduced in 2.13.0-M4 (final)
+        case FullScalaVersion(2, 13, 0, Some(milestone), qualifier) if milestone > 4 || (milestone == 4 && !qualifier.isDefined) =>
+          settings
+
+        case FullScalaVersion(2, 13, _, _, _) =>
+          settings
+
         case _ =>
           Seq.empty
       }
@@ -248,9 +226,11 @@ object SpiewakPlugin extends AutoPlugin {
 
     libraryDependencies ++= {
       scalaVersion.value match {
-        case "2.11.8" => Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
-        case "2.10.6" => Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
-        case _ => Seq.empty
+        case FullScalaVersion(2, 11, 8, _, _) | FullScalaVersion(2, 10, 6, _, _) =>
+          Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
+
+        case _ =>
+          Seq.empty
       }
     },
 
