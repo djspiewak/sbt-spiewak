@@ -155,10 +155,16 @@ object SpiewakPlugin extends AutoPlugin {
       "-encoding", "UTF-8", // yes, this is 2 args
       "-feature",
       "-unchecked",
-      "-Xfatal-warnings",
       "-Xlint",
       "-Yno-adapted-args",
       "-Ywarn-dead-code"),
+
+    scalacOptions ++= {
+      if (isTravisBuild.value)
+        Seq("-Xfatal-warnings")
+      else
+        Seq.empty
+    },
 
     scalacOptions ++= {
       CrossVersion.partialVersion(scalaVersion.value) match {
