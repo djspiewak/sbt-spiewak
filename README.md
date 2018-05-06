@@ -7,16 +7,14 @@ This plugin basically just exists to allow me to more conveniently setup my base
 Put this in your `plugins.sbt`:
 
 ```sbt
-resolvers += Resolver.url("djspiewak-sbt-plugins", url("https://dl.bintray.com/djspiewak/sbt-plugins"))(Resolver.ivyStylePatterns)
-
 // for stock functionality (no publication defaults)
-addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.3.3")
+addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.3.4")
 
 // publishing to bintray
-addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.3.3")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.3.4")
 
 // publishing to sonatype
-addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "0.3.3")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "0.3.4")
 ```
 
 Then, in your `build.sbt`, make sure you set a value for `baseVersion`:
