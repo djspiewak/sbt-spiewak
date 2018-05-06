@@ -1,4 +1,4 @@
-# sbt-spiewak [![Build Status](https://travis-ci.org/djspiewak/sbt-spiewak.svg?branch=master)](https://travis-ci.org/djspiewak/sbt-spiewak)
+# sbt-spiewak [![Build Status](https://travis-ci.org/djspiewak/sbt-spiewak.svg?branch=master)](https://travis-ci.org/djspiewak/sbt-spiewak) [![Download](https://api.bintray.com/packages/djspiewak/sbt-plugins/sbt-spiewak/images/download.svg)](https://bintray.com/djspiewak/sbt-plugins/sbt-spiewak/_latestVersion)
 
 This plugin basically just exists to allow me to more conveniently setup my baseline SBT configuration, which has evolved somewhat over the years, and is also becoming quite unwieldy when solely represented in [giter8 format](https://github.com/djspiewak/base.g8). **You probably shouldn't use this plugin.** If you do though, let me know how it works out!
 
@@ -8,19 +8,19 @@ Put this in your `plugins.sbt`:
 
 ```sbt
 // for stock functionality (no publication defaults)
-addSbtPlugin("com.codecommit" % "sbt-spiewak" % "0.3.4")
+addSbtPlugin("com.codecommit" % "sbt-spiewak" % "<version>")
 
 // publishing to bintray
-addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.3.4")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "<version>")
 
 // publishing to sonatype
-addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "0.3.4")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "<version>")
 ```
 
 Then, in your `build.sbt`, make sure you set a value for `baseVersion`:
 
 ```sbt
-baseVersion := "0.1"
+baseVersion in ThisBuild := "0.1"
 ```
 
 Or something like that.
