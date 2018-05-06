@@ -28,6 +28,7 @@ import com.typesafe.sbt.pgp.PgpKeys._
 import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
 
 import scala.sys.process._
+import scala.util.Try
 
 object SpiewakPlugin extends AutoPlugin {
 
@@ -148,7 +149,7 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       // jgit does weird things...
-      git.gitUncommittedChanges := "git status -s".!!.trim.length > 0)
+      git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true))
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
     addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.6" cross CrossVersion.binary),
@@ -245,7 +246,7 @@ object SpiewakPlugin extends AutoPlugin {
       if (sbtPlugin.value) {
         Set.empty
       } else {
-        val tags = "git tag --list".!!.split("\n").map(_.trim)
+        val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
 
         val versions =
           tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
