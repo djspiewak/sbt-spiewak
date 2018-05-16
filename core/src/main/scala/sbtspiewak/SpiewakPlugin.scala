@@ -227,7 +227,10 @@ object SpiewakPlugin extends AutoPlugin {
 
     libraryDependencies ++= {
       scalaVersion.value match {
-        case FullScalaVersion(2, 11, 8, _, _) | FullScalaVersion(2, 10, 6, _, _) =>
+        case FullScalaVersion(2, 10, build, _, _) if build >= 6 =>
+          Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
+
+        case FullScalaVersion(2, 11, 8, _, _) =>
           Seq(compilerPlugin("com.milessabin" % "si2712fix-plugin" % "1.2.0" cross CrossVersion.full))
 
         case _ =>
