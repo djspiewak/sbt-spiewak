@@ -191,7 +191,7 @@ object SpiewakPlugin extends AutoPlugin {
         case FullScalaVersion(2, 11, build, _, _) if build >= 11 =>
           Seq("-Ypartial-unification")
 
-        case FullScalaVersion(2, 13, 0, Some(milestone), qualifier) if milestone < 4 || (milestone == 4 && qualifier.isDefined) =>
+        case FullScalaVersion(2, 13, 0, MRC.Milestone(milestone), qualifier) if milestone < 4 || (milestone == 4 && qualifier.isDefined) =>
           Seq("-Ypartial-unification")
 
         case _ =>
@@ -208,7 +208,7 @@ object SpiewakPlugin extends AutoPlugin {
           settings
 
         // setting was introduced in 2.13.0-M4 (final)
-        case FullScalaVersion(2, 13, 0, Some(milestone), qualifier) if milestone > 4 || (milestone == 4 && !qualifier.isDefined) =>
+        case FullScalaVersion(2, 13, 0, MRC.Milestone(milestone), qualifier) if milestone > 4 || (milestone == 4 && !qualifier.isDefined) =>
           settings
 
         case FullScalaVersion(2, 13, _, _, _) =>

@@ -19,19 +19,23 @@ package sbtspiewak
 object FullScalaVersion {
   private val Release = """^(\d+)\.(\d+)\.(\d+)$""".r
   private val Milestone = """^(\d+)\.(\d+)\.(\d+)-M(\d+)$""".r
+  private val ReleaseCandidate = """^(\d+)\.(\d+)\.(\d+)-RC(\d+)$""".r
   private val Snapshot = """^(\d+)\.(\d+)\.(\d+)-M(\d+)(.+)$""".r
 
   /**
-   * Returns major, minor, build, milestone (optional), qualifier (optional)
+   * Returns major, minor, build, milestone/rc (optional), qualifier (optional)
    */
-  def unapply(version: String): Option[(Int, Int, Int, Option[Int], Option[String])] = version match {
+  def unapply(version: String): Option[(Int, Int, Int, MRC, Option[String])] = version match {
     case Release(major, minor, build) =>
-      Some((major.toInt, minor.toInt, build.toInt, None, None))
+      Some((major.toInt, minor.toInt, build.toInt, MRC.Final, None))
 
     case Milestone(major, minor, build, milestone) =>
-      Some((major.toInt, minor.toInt, build.toInt, Some(milestone.toInt), None))
+      Some((major.toInt, minor.toInt, build.toInt, MRC.Milestone(milestone.toInt), None))
+
+    case ReleaseCandidate(major, minor, build, rc) =>
+      Some((major.toInt, minor.toInt, build.toInt, MRC.ReleaseCandidate(rc.toInt), None))
 
     case Snapshot(major, minor, build, milestone, qualifier) =>
-      Some((major.toInt, minor.toInt, build.toInt, Some(milestone.toInt), Some(qualifier)))
+      Some((major.toInt, minor.toInt, build.toInt, MRC.Milestone(milestone.toInt), Some(qualifier)))
   }
 }
