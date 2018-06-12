@@ -84,7 +84,7 @@ organizationName := "John Smith"
 developers := Developer("johnsmith", "John Smith", "@johnsmith", url("https://github.com/johnsmith"))
 
 // if using sonatype...
-sonatypeProfileName := "com.my.groupId"
+sonatypeProfileName := "com.my.groupId"     // this defaults to organization.value
 ```
 
 You may also wish to override `licenses` and/or `startYear` if you aren't using Apache 2.0 and/or the year is not 2018.

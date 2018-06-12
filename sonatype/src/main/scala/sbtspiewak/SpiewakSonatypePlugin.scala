@@ -32,7 +32,7 @@ object SpiewakSonatypePlugin extends AutoPlugin {
   override def projectSettings = Seq(
     publishMavenStyle := !sbtPlugin.value,
 
-    sonatypeProfileName := "com.codecommit",
+    sonatypeProfileName := organization.value,
 
     publishTo := Some(
       if (isSnapshot.value)
