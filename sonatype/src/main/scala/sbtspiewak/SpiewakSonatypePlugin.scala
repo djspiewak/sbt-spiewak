@@ -20,7 +20,7 @@ import sbt._, Keys._
 
 import xerial.sbt.Sonatype, Sonatype.autoImport._
 
-object SpiewakBintrayPlugin extends AutoPlugin {
+object SpiewakSonatypePlugin extends AutoPlugin {
 
   override def requires = SpiewakPlugin && Sonatype
 
