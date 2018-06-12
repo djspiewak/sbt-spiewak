@@ -46,36 +46,8 @@ object SpiewakPlugin extends AutoPlugin {
     // strictly x.y.z
     val ReleaseTag = """^v((?:\d+\.){2}\d+)$""".r
 
-    /*
-     * Compatibility version.  Use this to declare what version with
-     * which `master` remains in compatibility.  This is literally
-     * backwards from how -SNAPSHOT versioning works, but it avoids
-     * the need to pre-declare (before work is done) what kind of
-     * compatibility properties the next version will have (i.e. major
-     * or minor bump).
-     *
-     * As an example, the builds of a project might go something like
-     * this:
-     *
-     * - 0.1-hash1
-     * - 0.1-hash2
-     * - 0.1-hash3
-     * - 0.1
-     * - 0.1-hash1
-     * - 0.2-hash2
-     * - 0.2
-     * - 0.2-hash1
-     * - 0.2-hash2
-     * - 1.0-hash3
-     * - 1.0-hash4
-     * - 1.0
-     *
-     * The value of BaseVersion starts at 0.1 and remains there until
-     * compatibility with the 0.1 line is lost, which happens just
-     * prior to the release of 0.2.  Then the base version again remains
-     * 0.2-compatible until that compatibility is broken, with the major
-     * version bump of 1.0.  Again, this is all to avoid pre-committing
-     * to a major/minor bump before the work is done (see: Scala 2.8).
+    /**
+     * https://github.com/djspiewak/sbt-spiewak/versioning/blob/589b9ea/versioning.md
      */
     lazy val baseVersion = git.baseVersion
 
