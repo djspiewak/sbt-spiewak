@@ -200,7 +200,7 @@ object SpiewakPlugin extends AutoPlugin {
 
     scalacOptions in Test += "-Yrangepos",
 
-    scalacOptions in (Compile, console) -= "-Ywarn-unused-import",
+    scalacOptions in (Compile, console) --= Seq("-Xlint", "-Ywarn-unused-import"),
     scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value,
 
     libraryDependencies ++= {
