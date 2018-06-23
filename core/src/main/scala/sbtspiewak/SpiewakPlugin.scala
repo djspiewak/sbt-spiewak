@@ -193,8 +193,7 @@ object SpiewakPlugin extends AutoPlugin {
 
     scalacOptions in Test += "-Yrangepos",
 
-    scalacOptions in (Compile, console) ~= (_ filterNot (Set("-Xfatal-warnings", "-Ywarn-unused-import").contains)),
-
+    scalacOptions in (Compile, console) -= "-Ywarn-unused-import",
     scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value,
 
     libraryDependencies ++= {
