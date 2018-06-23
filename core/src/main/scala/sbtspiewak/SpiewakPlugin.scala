@@ -145,11 +145,18 @@ object SpiewakPlugin extends AutoPlugin {
     },
 
     scalacOptions ++= {
+      val warnings211 = Seq(
+        "-Ywarn-unused-import", // Not available in 2.10
+        "-Ywarn-numeric-widen") // In 2.10 this produces a some strange spurious error
+
+      val warnings212 = Seq("-Xlint:-unused,_")
+
       scalaVersion.value match {
+        case FullScalaVersion(2, minor, _, _, _) if minor >= 12 =>
+          warnings211 ++ warnings212
+
         case FullScalaVersion(2, minor, _, _, _) if minor >= 11 =>
-          Seq(
-            "-Ywarn-unused-import", // Not available in 2.10
-            "-Ywarn-numeric-widen") // In 2.10 this produces a some strange spurious error
+          warnings211
 
         case _ => Seq.empty
       }
