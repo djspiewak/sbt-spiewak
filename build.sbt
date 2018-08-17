@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-baseVersion in Global := "0.5"
+baseVersion in Global := "0.6"
 
 bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 sbtPlugin in Global := true
 
-sbtVersion in Global := {
-  scalaBinaryVersion.value match {
-    case "2.10" => "0.13.16"
-    case "2.12" => "1.1.6"
-  }
-}
+sbtVersion in Global := "1.2.1"
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
@@ -42,7 +37,7 @@ lazy val core = project
     addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0"),
     addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0"),
     addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.3.0"),
-    addSbtPlugin("com.jsuereth"      % "sbt-pgp"         % "1.1.1"))
+    addSbtPlugin("io.crashbox"       % "sbt-gpg"         % "0.2.0"))
 
 lazy val bintray = project
   .in(file("bintray"))

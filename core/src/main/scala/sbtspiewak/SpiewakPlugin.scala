@@ -20,11 +20,10 @@ import sbt._, Keys._
 
 import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
+import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
 import coursier.Keys._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
-import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
-import com.typesafe.sbt.SbtPgp
-import com.typesafe.sbt.pgp.PgpKeys._
+import _root_.io.crashbox.gpg.SbtGpg
 import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
 
 import scala.sys.process._
@@ -34,7 +33,7 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def requires =
     GitPlugin &&
-    SbtPgp &&
+    SbtGpg &&
     TravisCiPlugin &&
     MimaPlugin &&
     coursier.CoursierPlugin &&
@@ -67,18 +66,6 @@ object SpiewakPlugin extends AutoPlugin {
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("ci", "; clean; test; mimaReportBinaryIssues") ++
-    {
-      // this needs to be here because sbt-pgp is written incorrectly and uses inScope(Global) in buildSettings
-      import com.typesafe.sbt.pgp._
-
-      inScope(Global)(Seq(
-        pgpSecretRing := pgpPublicRing.value,   // workaround for sbt/sbt-pgp#126
-        useGpg := true,
-
-        // workaround for other madness in sbt-pgp
-        pgpSigner := new CommandLineGpgSigner(gpgCommand.value, useGpgAgent.value, pgpSecretRing.value.getPath, pgpSigningKey.value, pgpPassphrase.value),
-        pgpVerifierFactory := new BouncyCastlePgpVerifierFactory(pgpCmdContext.value)))
-    } ++
     Seq(
       organization := "com.codecommit",
       organizationName := "Daniel Spiewak",

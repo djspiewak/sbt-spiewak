@@ -39,8 +39,7 @@ Or something like that.
     * With fixed support for Travis builds
   + sbt-sonatype (or bintray!)
     * With fixed snapshot publication URLs
-  + sbt-pgp
-    * Fixes most of the glitches and bugs related to sbt-pgp's setting scoping and default configuration
+  + sbt-gpg
   + sbt-mima
     * Infers previous versions by using git tags
     * Automatically runs on `ci` and `release`
