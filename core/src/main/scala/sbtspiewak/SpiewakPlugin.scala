@@ -121,8 +121,16 @@ object SpiewakPlugin extends AutoPlugin {
       "-feature",
       "-unchecked",
       "-Xlint",
-      "-Yno-adapted-args",
       "-Ywarn-dead-code"),
+
+    scalacOptions ++= {
+      scalaVersion.value match {
+        case FullScalaVersion(2, minor, _, _, _) if minor < 13 =>
+          Seq("-Yno-adapted-args")
+        case _ =>
+          Seq.empty
+      }
+    },
 
     scalacOptions ++= {
       if (isTravisBuild.value)
