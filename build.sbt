@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-baseVersion in Global := "0.6"
+baseVersion in Global := "0.7"
 
 bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
