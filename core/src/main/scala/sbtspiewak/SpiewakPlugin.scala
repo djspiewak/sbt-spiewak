@@ -219,13 +219,21 @@ object SpiewakPlugin extends AutoPlugin {
       val TagBase = """^(\d+)\.(\d+).*"""r
       val TagBase(major, minor) = baseVersion.value
 
+      val isPre = major == 0
+
       if (sbtPlugin.value) {
         Set.empty
       } else {
         val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
 
+        // in semver, we allow breakage in minor releases if major is 0, otherwise not
+        val prefix = if (isPre)
+          s"v$major.$minor"
+        else
+          s"v$major"
+
         val versions =
-          tags.filter(_.startsWith(s"v$major.$minor")).map(_.substring(1))
+          tags.filter(_.startsWith(prefix)).map(_.substring(1))
 
         versions.filterNot(current ==).map(v => org %% n % v).toSet
       }
