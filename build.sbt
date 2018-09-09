@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+organization in Global := "com.codecommit"
+
+publishGithubUser in Global := "djspiewak"
+publishFullName in Global := "Daniel Spiewak"
+
 baseVersion in Global := "0.7"
 
 bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 sbtPlugin in Global := true
-
 sbtVersion in Global := "1.2.1"
 
 lazy val root = project
