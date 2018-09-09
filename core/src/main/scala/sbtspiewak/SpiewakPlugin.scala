@@ -50,6 +50,9 @@ object SpiewakPlugin extends AutoPlugin {
      */
     lazy val baseVersion = git.baseVersion
 
+    lazy val publishGithubUser = settingKey[String]("The github username of the main developer")
+    lazy val publishFullName = settingKey[String]("The full name of the main developer")
+
     def noPublishSettings = Seq(
       publish := {},
       publishLocal := {},
@@ -67,8 +70,7 @@ object SpiewakPlugin extends AutoPlugin {
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("ci", "; clean; test; mimaReportBinaryIssues") ++
     Seq(
-      organization := "com.codecommit",
-      organizationName := "Daniel Spiewak",
+      organizationName := publishFullName.value,
 
       startYear := Some(2018),
 
@@ -81,7 +83,11 @@ object SpiewakPlugin extends AutoPlugin {
 
       pomIncludeRepository := { _ => false },
 
-      developers += Developer("djspiewak", "Daniel Spiewak", "@djspiewak", url("http://www.codecommit.com")),
+      developers += Developer(
+        publishGithubUser.value,
+        publishFullName.value,
+        s"@${publishGithubUser.value}",
+        url(s"https://github.com/${publishGithubUser.value}")),
 
       git.gitTagToVersionNumber := {
         val log = sLog.value
