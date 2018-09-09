@@ -4,7 +4,7 @@ This plugin basically just exists to allow me to more conveniently setup my base
 
 ## Usage
 
-Put this in your `plugins.sbt`:
+Put one of the following into your `plugins.sbt`:
 
 ```sbt
 // for stock functionality (no publication defaults)
@@ -17,13 +17,28 @@ addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "<version>")
 addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "<version>")
 ```
 
-Then, in your `build.sbt`, make sure you set a value for `baseVersion`:
+Then, in your `build.sbt`, make sure you set a value for `baseVersion`, `organization`, `publishGithubUser` and `publishFullName`:
 
 ```sbt
+organization in ThisBuild := "com.codecommit"
+
 baseVersion in ThisBuild := "0.1"
+
+publishGithubUser in ThisBuild := "djspiewak"
+publishFullName in ThisBuild := "Daniel Spiewak"
 ```
 
 Or something like that.
+
+If you have a multi-module build and need a subproject to *not* publish (as is commonly done with the `root` project), bring in `noPublishSettings`. For example:
+
+```sbt
+lazy val root = project
+  .aggregate(core, bintray, sonatype)
+  .in(file("."))
+  .settings(name := "root")
+  .settings(noPublishSettings)
+```
 
 ## Features
 
@@ -50,8 +65,6 @@ Or something like that.
 - `release` and `ci` command aliases
   + Ensures bintray package existence
   + Performs sonatype release steps
-- Hard-coded defaults which assume `com.codecommit` and `Daniel Spiewak` in all the places
-  + ...this is totally a feature!
 
 ### Bintray Requirements
 
@@ -74,16 +87,8 @@ scmInfo in Global := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewak"
 
 ## Defaults Which You May Wish to Override...
 
-Everything is basically hard-coded to assume you are me. If you are not me, then you should override the following keys:
+You may consider overriding any of the following keys, which are hard-coded to defaults that I believe are sane:
 
-```sbt
-organization := "com.my.groupId"
-organizationName := "John Smith"
-
-developers := Developer("johnsmith", "John Smith", "@johnsmith", url("https://github.com/johnsmith"))
-
-// if using sonatype...
-sonatypeProfileName := "com.my.groupId"     // this defaults to organization.value
-```
-
-You may also wish to override `licenses` and/or `startYear` if you aren't using Apache 2.0 and/or the year is not 2018.
+- `licenses` (defaults to Apache 2.0)
+- `developers` (defaults to just yourself, using the `publishFullName` and `publishGithubUser`)
+- `startYear` (defaults to 2018)
