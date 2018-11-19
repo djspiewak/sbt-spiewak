@@ -28,11 +28,13 @@ object SpiewakBintrayPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   override def buildSettings =
-    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publish") ++
+    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publish; +bintrayRelease") ++
     Seq(
       credentials in bintray := {
         val old = (credentials in bintray).value
 
         if (isTravisBuild.value) Nil else old
-      })
+      },
+
+      bintrayReleaseOnPublish := false)
 }
