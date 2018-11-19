@@ -24,7 +24,7 @@ baseVersion in Global := "0.8"
 bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 sbtPlugin in Global := true
-sbtVersion in Global := "1.2.1"
+sbtVersion in Global := "1.2.6"
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
@@ -36,7 +36,7 @@ lazy val core = project
   .in(file("core"))
   .settings(name := "sbt-spiewak")
   .settings(
-    addSbtPlugin("io.get-coursier"   % "sbt-coursier"    % "1.1.0-M4"),
+    addSbtPlugin("io.get-coursier"   % "sbt-coursier"    % "1.1.0-M7"),
     addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.3"),
     addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0"),
     addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0"),
