@@ -4,9 +4,7 @@ This plugin basically just exists to allow me to more conveniently setup my base
 
 If you generally agree with my opinions on how projects should be set up, though, then this is probably a really excellent plugin to base on! Between this plugin and my giter8 template, you can get a new Scala project up and running and publishing to Bintray or Sonatype within about five minutes. As an example, check out this quick screencast:
 
-<iframe id="ytplayer" type="text/html" width="640" height="360"
-  src="https://www.youtube.com/embed/SjcMKHpY1WU?autoplay=0&origin=https://github.com/djspiewak/sbt-spiewak"
-  frameborder="0"/>
+[![sbt-spiewak demo](https://img.youtube.com/vi/SjcMKHpY1WU/0.jpg)](https://www.youtube.com/watch?v=SjcMKHpY1WU)
 
 TLDR, it's really really easy.
 
