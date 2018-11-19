@@ -1,6 +1,14 @@
 # sbt-spiewak [![Build Status](https://travis-ci.org/djspiewak/sbt-spiewak.svg?branch=master)](https://travis-ci.org/djspiewak/sbt-spiewak) [![Download](https://api.bintray.com/packages/djspiewak/sbt-plugins/sbt-spiewak/images/download.svg)](https://bintray.com/djspiewak/sbt-plugins/sbt-spiewak/_latestVersion)
 
-This plugin basically just exists to allow me to more conveniently setup my baseline SBT configuration, which has evolved somewhat over the years, and is also becoming quite unwieldy when solely represented in [giter8 format](https://github.com/djspiewak/base.g8). **You probably shouldn't use this plugin.** If you do though, let me know how it works out!
+This plugin basically just exists to allow me to more conveniently setup my baseline SBT configuration, which has evolved somewhat over the years, and is also becoming quite unwieldy when solely represented in [giter8 format](https://github.com/djspiewak/base.g8).
+
+If you generally agree with my opinions on how projects should be set up, though, then this is probably a really excellent plugin to base on! Between this plugin and my giter8 template, you can get a new Scala project up and running and publishing to Bintray or Sonatype within about five minutes. As an example, check out this quick screencast:
+
+<iframe id="ytplayer" type="text/html" width="640" height="360"
+  src="https://www.youtube.com/embed/SjcMKHpY1WU?autoplay=0&origin=https://github.com/djspiewak/sbt-spiewak"
+  frameborder="0"/>
+
+TLDR, it's really really easy.
 
 ## Usage
 
@@ -65,6 +73,7 @@ lazy val root = project
 - `release` and `ci` command aliases
   + Ensures bintray package existence
   + Performs sonatype release steps
+  + Assumes your root project is declared as `lazy val root = project`, etc
 
 ### Bintray Requirements
 
@@ -92,3 +101,5 @@ You may consider overriding any of the following keys, which are hard-coded to d
 - `licenses` (defaults to Apache 2.0)
 - `developers` (defaults to just yourself, using the `publishFullName` and `publishGithubUser`)
 - `startYear` (defaults to 2018)
+- `strictSemVer` (defaults to `true`)
+  + When set to `true`, it disallows breaking binary compatibility in any release which does not increment the *major* component unless the major component is `0` (i.e. semantic versioning). Many Scala projects break binary compatibility in *minor* releases, such as Scala itself. This scheme is sometimes referred to as "scala ver". Setting `strictSemVer in ThisBuild := false` will relax the MiMa compatibility checks and allow you to perform such breakage if desired.

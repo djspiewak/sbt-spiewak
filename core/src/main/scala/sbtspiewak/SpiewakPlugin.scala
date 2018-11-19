@@ -50,6 +50,8 @@ object SpiewakPlugin extends AutoPlugin {
      */
     lazy val baseVersion = git.baseVersion
 
+    lazy val strictSemVer = settingKey[Boolean]("Set to true to forbid breaking changes in the minor releases (strict semantic versioning)")
+
     lazy val publishGithubUser = settingKey[String]("The github username of the main developer")
     lazy val publishFullName = settingKey[String]("The full name of the main developer")
 
@@ -71,6 +73,8 @@ object SpiewakPlugin extends AutoPlugin {
     addCommandAlias("ci", "; project root; clean; test; mimaReportBinaryIssues") ++
     Seq(
       organizationName := publishFullName.value,
+
+      strictSemVer := true,
 
       startYear := Some(2018),
 
@@ -233,7 +237,7 @@ object SpiewakPlugin extends AutoPlugin {
         val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
 
         // in semver, we allow breakage in minor releases if major is 0, otherwise not
-        val prefix = if (isPre)
+        val prefix = if (isPre || !strictSemVer.value)
           s"v$major.$minor"
         else
           s"v$major"

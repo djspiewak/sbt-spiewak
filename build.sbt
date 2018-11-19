@@ -19,7 +19,7 @@ organization in Global := "com.codecommit"
 publishGithubUser in Global := "djspiewak"
 publishFullName in Global := "Daniel Spiewak"
 
-baseVersion in Global := "0.7"
+baseVersion in Global := "0.8"
 
 bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
