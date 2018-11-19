@@ -71,7 +71,6 @@ lazy val root = project
 - `release` and `ci` command aliases
   + Ensures bintray package existence
   + Performs sonatype release steps
-  + Assumes your root project is declared as `lazy val root = project`, etc
 
 ### Bintray Requirements
 
