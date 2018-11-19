@@ -68,7 +68,7 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
-    addCommandAlias("ci", "; clean; test; mimaReportBinaryIssues") ++
+    addCommandAlias("ci", "; project root; clean; test; mimaReportBinaryIssues") ++
     Seq(
       organizationName := publishFullName.value,
 
