@@ -30,11 +30,21 @@ object SpiewakBintrayPlugin extends AutoPlugin {
   override def buildSettings =
     addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publish; +bintrayRelease") ++
     Seq(
-      credentials in bintray := {
-        val old = (credentials in bintray).value
+      bintray / credentials := {
+        val old = (bintray / credentials).value
 
         if (isTravisBuild.value) Nil else old
       },
 
       bintrayReleaseOnPublish := false)
+
+  override def projectSettings =
+    Seq(
+      bintrayRelease := Def.taskDyn {
+        val default = bintrayRelease.taskValue
+        if ((publish / skip).?.value.getOrElse(false))
+          Def.task(())
+        else
+          Def.task(default.value)
+      }.value)
 }
