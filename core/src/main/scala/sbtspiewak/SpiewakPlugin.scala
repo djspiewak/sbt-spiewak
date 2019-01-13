@@ -76,7 +76,7 @@ object SpiewakPlugin extends AutoPlugin {
 
       strictSemVer := true,
 
-      startYear := Some(2018),
+      startYear := Some(2019),
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
 
@@ -203,10 +203,10 @@ object SpiewakPlugin extends AutoPlugin {
       }
     },
 
-    scalacOptions in Test += "-Yrangepos",
+    Test / scalacOptions += "-Yrangepos",
 
-    scalacOptions in (Compile, console) --= Seq("-Xlint", "-Ywarn-unused-import"),
-    scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value,
+    Compile / console / scalacOptions --= Seq("-Xlint", "-Ywarn-unused-import"),
+    Test / console / scalacOptions := (scalacOptions in (Compile, console)).value,
 
     libraryDependencies ++= {
       scalaVersion.value match {
