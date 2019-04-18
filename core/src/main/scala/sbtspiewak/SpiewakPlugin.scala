@@ -21,7 +21,7 @@ import sbt._, Keys._
 import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
-import coursier.Keys._
+import coursier.sbtcoursier.{CoursierPlugin, Keys}, Keys._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
 import _root_.io.crashbox.gpg.SbtGpg
 import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
@@ -36,7 +36,7 @@ object SpiewakPlugin extends AutoPlugin {
     SbtGpg &&
     TravisCiPlugin &&
     MimaPlugin &&
-    coursier.CoursierPlugin &&
+    CoursierPlugin &&
     plugins.JvmPlugin
 
   override def trigger = allRequirements
@@ -80,7 +80,6 @@ object SpiewakPlugin extends AutoPlugin {
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
 
-      coursierUseSbtCredentials := true,
       coursierChecksums := Nil,      // workaround for nexus sync bugs
 
       isSnapshot := version.value endsWith "SNAPSHOT",
@@ -121,7 +120,7 @@ object SpiewakPlugin extends AutoPlugin {
       git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true))
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
-    addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.9" cross CrossVersion.binary),
+    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.10.0" cross CrossVersion.binary),
 
     // Adapted from Rob Norris' post at https://tpolecat.github.io/2014/04/11/scalac-flags.html
     scalacOptions ++= Seq(
