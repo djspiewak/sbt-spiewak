@@ -1,1 +1,1 @@
-addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.8.5")
+addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "0.9-a3bf234")
