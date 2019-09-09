@@ -19,12 +19,12 @@ Global / organization := "com.codecommit"
 Global / publishGithubUser := "djspiewak"
 Global / publishFullName := "Daniel Spiewak"
 
-Global / baseVersion := "0.9"
+Global / baseVersion := "0.10"
 
 Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.2.8"
+Global / sbtVersion := "1.3.0"
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
@@ -36,11 +36,10 @@ lazy val core = project
   .in(file("core"))
   .settings(name := "sbt-spiewak")
   .settings(
-    addSbtPlugin("io.get-coursier"   % "sbt-coursier"    % "1.1.0-M13"),
-    addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.3"),
+    addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0"),
     addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0"),
     addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0"),
-    addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.3.0"),
+    addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.6.0"),
     addSbtPlugin("io.crashbox"       % "sbt-gpg"         % "0.2.0"))
 
 lazy val bintray = project
@@ -48,11 +47,11 @@ lazy val bintray = project
   .dependsOn(core)
   .settings(name := "sbt-spiewak-bintray")
   .settings(
-    addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4"))
+    addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5"))
 
 lazy val sonatype = project
   .in(file("sonatype"))
   .dependsOn(core)
   .settings(name := "sbt-spiewak-sonatype")
   .settings(
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.5"))
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.6"))

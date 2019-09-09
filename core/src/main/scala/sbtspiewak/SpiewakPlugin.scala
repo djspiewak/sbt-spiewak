@@ -21,7 +21,6 @@ import sbt._, Keys._
 import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
-import coursier.sbtcoursier.{CoursierPlugin, Keys}, Keys._
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
 import _root_.io.crashbox.gpg.SbtGpg
 import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
@@ -36,7 +35,6 @@ object SpiewakPlugin extends AutoPlugin {
     SbtGpg &&
     TravisCiPlugin &&
     MimaPlugin &&
-    CoursierPlugin &&
     plugins.JvmPlugin
 
   override def trigger = allRequirements
@@ -79,8 +77,6 @@ object SpiewakPlugin extends AutoPlugin {
       startYear := Some(2019),
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
-
-      coursierChecksums := Nil,      // workaround for nexus sync bugs
 
       isSnapshot := version.value endsWith "SNAPSHOT",
 
