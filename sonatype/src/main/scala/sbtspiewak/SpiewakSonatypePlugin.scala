@@ -27,16 +27,10 @@ object SpiewakSonatypePlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   override def buildSettings =
-    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +publish; sonatypeReleaseAll")
+    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +publish; sonatypeBundleRelease")
 
   override def projectSettings = Seq(
     publishMavenStyle := !sbtPlugin.value,
-
     sonatypeProfileName := organization.value,
-
-    publishTo := Some(
-      if (isSnapshot.value)
-        Opts.resolver.sonatypeSnapshots
-      else
-        Opts.resolver.sonatypeStaging))
+    publishTo := sonatypePublishToBundle.value)
 }
