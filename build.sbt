@@ -24,7 +24,7 @@ Global / baseVersion := "0.10"
 Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.3.0"
+Global / sbtVersion := "1.3.2"
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
@@ -39,7 +39,7 @@ lazy val core = project
     addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0"),
     addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0"),
     addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0"),
-    addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.6.0"),
+    addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.6.1"),
     addSbtPlugin("io.crashbox"       % "sbt-gpg"         % "0.2.0"))
 
 lazy val bintray = project
