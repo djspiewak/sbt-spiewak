@@ -54,4 +54,4 @@ lazy val sonatype = project
   .dependsOn(core)
   .settings(name := "sbt-spiewak-sonatype")
   .settings(
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.6"))
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8"))
