@@ -74,7 +74,7 @@ object SpiewakPlugin extends AutoPlugin {
 
       strictSemVer := true,
 
-      startYear := Some(2019),
+      startYear := Some(2020),
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
 
