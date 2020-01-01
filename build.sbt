@@ -19,12 +19,12 @@ Global / organization := "com.codecommit"
 Global / publishGithubUser := "djspiewak"
 Global / publishFullName := "Daniel Spiewak"
 
-Global / baseVersion := "0.11"
+Global / baseVersion := "0.12"
 
 Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.3.2"
+Global / sbtVersion := "1.3.6"
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
@@ -38,7 +38,7 @@ lazy val core = project
   .settings(
     addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0"),
     addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0"),
-    addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0"),
+    addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.3.1"),
     addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.6.1"),
     addSbtPlugin("io.crashbox"       % "sbt-gpg"         % "0.2.0"))
 
