@@ -21,5 +21,6 @@ sealed trait MRC extends Product with Serializable
 object MRC {
   final case class Milestone(num: Int) extends MRC
   final case class ReleaseCandidate(num: Int) extends MRC
+  final case class Nightly(bin: Boolean, hash: String) extends MRC
   case object Final extends MRC
 }
