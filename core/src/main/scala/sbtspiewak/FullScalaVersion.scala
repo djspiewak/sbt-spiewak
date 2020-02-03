@@ -21,7 +21,7 @@ object FullScalaVersion {
   private val Milestone = """^(\d+)\.(\d+)\.(\d+)-M(\d+)$""".r
   private val ReleaseCandidate = """^(\d+)\.(\d+)\.(\d+)-RC(\d+)$""".r
   private val Snapshot = """^(\d+)\.(\d+)\.(\d+)-M(\d+)(.+)$""".r
-  private val Nightly = """^(\d+)\.(\d+)\.(\d+)-(bin|pre)-([0-9a-f]{7})$""".r
+  private val Nightly = """^(\d+)\.(\d+)\.(\d+)-(bin|pre)-([0-9a-f]{7})(-SNAPSHOT)?$""".r
 
   /**
    * Returns major, minor, build, milestone/rc (optional), qualifier (optional)
@@ -39,7 +39,7 @@ object FullScalaVersion {
     case Snapshot(major, minor, build, milestone, qualifier) =>
       Some((major.toInt, minor.toInt, build.toInt, MRC.Milestone(milestone.toInt), Some(qualifier)))
 
-    case Nightly(major, minor, build, binPre, hash) =>
-      Some((major.toInt, minor.toInt, build.toInt, MRC.Nightly(binPre == "bin", hash), None))
+    case Nightly(major, minor, build, binPre, hash, snapshot) =>
+      Some((major.toInt, minor.toInt, build.toInt, MRC.Nightly(binPre == "bin", hash, snapshot != null), None))
   }
 }
