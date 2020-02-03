@@ -24,7 +24,7 @@ Global / baseVersion := "0.13"
 Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.3.6"
+Global / sbtVersion := "1.3.8"
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
