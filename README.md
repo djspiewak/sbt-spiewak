@@ -78,7 +78,7 @@ lazy val root = project
 You will need to additionally define the following setting:
 
 ```sbt
-bintrayVcsUrl in Global := Some("git@github.com:djspiewak/sbt-spiewak.git")
+bintrayVcsUrl in Global := Some("git@github.com:you/your-repo.git")
 ```
 
 ### Sonatype Requirements
