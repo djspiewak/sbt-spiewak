@@ -81,6 +81,10 @@ You will need to additionally define the following setting:
 bintrayVcsUrl in Global := Some("git@github.com:you/your-repo.git")
 ```
 
+sbt-bintray will look for a credentials file under
+`~/.bintray/.credentials` used to authenticate publishing requests
+to bintray.
+
 ### Sonatype Requirements
 
 You will additionally need to define the following settings:
