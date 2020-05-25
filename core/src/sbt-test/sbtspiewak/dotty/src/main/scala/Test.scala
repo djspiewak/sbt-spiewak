@@ -9,4 +9,14 @@ object Test {
   foo[Option[*], Int](Some(42))    // testing kind-projector things
 
   foo[Either[String, *], Int](Right(42))
+
+  implicit class IntSyntax(val i: Int) extends AnyVal {
+    def bippy() = println("hi")
+  }
+
+  42.bippy()
+
+  implicit def unitToString(u: Unit): String = "unit"
+
+  val s: String = ()
 }

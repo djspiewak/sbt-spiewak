@@ -222,7 +222,7 @@ object SpiewakPlugin extends AutoPlugin {
 
     scalacOptions ++= {
       if (isDotty.value)
-        Seq("-language:Scala2Compat", "-Ykind-projector")
+        Seq("-language:Scala2Compat,implicitConversions", "-Ykind-projector")
       else
         Seq("-language:_")
     },
