@@ -21,8 +21,13 @@ import sbt._, Keys._
 import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
+
 import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
+
+import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
+
 import _root_.io.crashbox.gpg.SbtGpg
+
 import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
 
 import scala.sys.process._
@@ -35,6 +40,7 @@ object SpiewakPlugin extends AutoPlugin {
     SbtGpg &&
     TravisCiPlugin &&
     MimaPlugin &&
+    DottyPlugin &&
     plugins.JvmPlugin
 
   override def trigger = allRequirements
@@ -116,17 +122,19 @@ object SpiewakPlugin extends AutoPlugin {
       git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true))
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
-    addCompilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full),
+    libraryDependencies ++= {
+      if (isDotty.value)
+        Nil
+      else
+        Seq(compilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full))
+    },
 
     // Adapted from Rob Norris' post at https://tpolecat.github.io/2014/04/11/scalac-flags.html
     scalacOptions ++= Seq(
-      "-language:_",
       "-deprecation",
       "-encoding", "UTF-8", // yes, this is 2 args
       "-feature",
-      "-unchecked",
-      "-Xlint",
-      "-Ywarn-dead-code"),
+      "-unchecked"),
 
     scalacOptions ++= {
       scalaVersion.value match {
@@ -147,6 +155,9 @@ object SpiewakPlugin extends AutoPlugin {
     scalacOptions ++= {
       val YwarnUnusedImport = "-Ywarn-unused-import"
 
+      val warningsNsc = Seq("-Xlint", "-Ywarn-dead-code")
+      val warningsDotty = Seq()
+
       val warnings211 = Seq(
         YwarnUnusedImport, // Not available in 2.10
         "-Ywarn-numeric-widen") // In 2.10 this produces a some strange spurious error
@@ -154,14 +165,20 @@ object SpiewakPlugin extends AutoPlugin {
       val warnings212 = Seq("-Xlint:-unused,_")
 
       scalaVersion.value match {
+        case FullScalaVersion(0, minor, _, _, _) if minor >= 24 =>
+          warningsDotty
+
+        case FullScalaVersion(3, _, _, _, _) =>
+          warningsDotty
+
         case FullScalaVersion(2, minor, _, _, _) if minor >= 13 =>
-          (warnings211 ++ warnings212).filterNot(_ == YwarnUnusedImport)    // no idea where this went...
+          (warnings211 ++ warnings212 ++ warningsNsc).filterNot(_ == YwarnUnusedImport)    // no idea where this went...
 
         case FullScalaVersion(2, minor, _, _, _) if minor >= 12 =>
-          warnings211 ++ warnings212
+          warnings211 ++ warnings212 ++ warningsNsc
 
         case FullScalaVersion(2, minor, _, _, _) if minor >= 11 =>
-          warnings211
+          warnings211 ++ warningsNsc
 
         case _ => Seq.empty
       }
@@ -201,6 +218,13 @@ object SpiewakPlugin extends AutoPlugin {
         case _ =>
           Seq.empty
       }
+    },
+
+    scalacOptions ++= {
+      if (isDotty.value)
+        Seq("-language:Scala2Compat", "-Ykind-projector")
+      else
+        Seq("-language:_")
     },
 
     Test / scalacOptions += "-Yrangepos",
