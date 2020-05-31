@@ -28,7 +28,7 @@ import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
 
 import _root_.io.crashbox.gpg.SbtGpg
 
-import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
+import sbtghactions.{GitHubActionsKeys, GitHubActionsPlugin}, GitHubActionsKeys._
 
 import scala.sys.process._
 import scala.util.Try
@@ -38,7 +38,7 @@ object SpiewakPlugin extends AutoPlugin {
   override def requires =
     GitPlugin &&
     SbtGpg &&
-    TravisCiPlugin &&
+    GitHubActionsPlugin &&
     MimaPlugin &&
     DottyPlugin &&
     plugins.JvmPlugin
@@ -146,7 +146,7 @@ object SpiewakPlugin extends AutoPlugin {
     },
 
     scalacOptions ++= {
-      if (isTravisBuild.value)
+      if (githubIsWorkflowBuild.value)
         Seq("-Xfatal-warnings")
       else
         Seq.empty

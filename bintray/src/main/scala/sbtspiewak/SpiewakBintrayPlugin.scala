@@ -19,11 +19,11 @@ package sbtspiewak
 import sbt._, Keys._
 
 import bintray.BintrayKeys._
-import sbttravisci.TravisCiPlugin, TravisCiPlugin.autoImport._
+import sbtghactions.{GitHubActionsKeys, GitHubActionsPlugin}, GitHubActionsKeys._
 
 object SpiewakBintrayPlugin extends AutoPlugin {
 
-  override def requires = SpiewakPlugin && TravisCiPlugin && _root_.bintray.BintrayPlugin
+  override def requires = SpiewakPlugin && GitHubActionsPlugin && _root_.bintray.BintrayPlugin
 
   override def trigger = allRequirements
 
@@ -33,7 +33,7 @@ object SpiewakBintrayPlugin extends AutoPlugin {
       bintray / credentials := {
         val old = (bintray / credentials).value
 
-        if (isTravisBuild.value) Nil else old
+        if (githubIsWorkflowBuild.value) Nil else old
       },
 
       bintrayReleaseOnPublish := false)
