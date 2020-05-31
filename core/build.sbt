@@ -1,0 +1,6 @@
+addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0")
+addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.3.1")
+addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.6.1")
+addSbtPlugin("io.crashbox"       % "sbt-gpg"         % "0.2.0")
+addSbtPlugin("ch.epfl.lamp"      % "sbt-dotty"       % "0.4.1")

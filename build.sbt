@@ -36,13 +36,6 @@ lazy val core = project
   .in(file("core"))
   .settings(name := "sbt-spiewak")
   .settings(
-    addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0"),
-    addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "1.0.0"),
-    addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.3.1"),
-    addSbtPlugin("com.typesafe"      % "sbt-mima-plugin" % "0.6.1"),
-    addSbtPlugin("io.crashbox"       % "sbt-gpg"         % "0.2.0"),
-    addSbtPlugin("ch.epfl.lamp"      % "sbt-dotty"       % "0.4.1"),
-
     scriptedLaunchOpts ++= Seq("-Dplugin.version=" + version.value),
     scriptedBufferLog := true)
   .enablePlugins(SbtPlugin)
@@ -51,12 +44,8 @@ lazy val bintray = project
   .in(file("bintray"))
   .dependsOn(core)
   .settings(name := "sbt-spiewak-bintray")
-  .settings(
-    addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.5"))
 
 lazy val sonatype = project
   .in(file("sonatype"))
   .dependsOn(core)
   .settings(name := "sbt-spiewak-sonatype")
-  .settings(
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8"))
