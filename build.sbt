@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+replaceCommandAlias("ci", "; project /; headerCheck; clean; test; scripted; mimaReportBinaryIssues")
+
 Global / organization := "com.codecommit"
 
 Global / publishGithubUser := "djspiewak"

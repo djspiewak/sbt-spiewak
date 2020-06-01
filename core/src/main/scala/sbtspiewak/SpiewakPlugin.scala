@@ -28,7 +28,7 @@ import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
 
 import _root_.io.crashbox.gpg.SbtGpg
 
-import sbtghactions.{GitHubActionsKeys, GitHubActionsPlugin}, GitHubActionsKeys._
+import sbtghactions.{GenerativeKeys, GenerativePlugin, GitHubActionsKeys, GitHubActionsPlugin}, GenerativeKeys._, GitHubActionsKeys._
 
 import scala.sys.process._
 import scala.util.Try
@@ -39,6 +39,7 @@ object SpiewakPlugin extends AutoPlugin {
     GitPlugin &&
     SbtGpg &&
     GitHubActionsPlugin &&
+    GenerativePlugin &&
     MimaPlugin &&
     DottyPlugin &&
     plugins.JvmPlugin
@@ -91,6 +92,9 @@ object SpiewakPlugin extends AutoPlugin {
       startYear := Some(2020),
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
+
+      // disable automatic generation of the publication workflow
+      githubWorkflowPublishTargetBranches := Seq(),
 
       isSnapshot := version.value endsWith "SNAPSHOT",
 
