@@ -288,5 +288,14 @@ object SpiewakPlugin extends AutoPlugin {
 
         versions.filterNot(current ==).map(v => org %% n % v).toSet
       }
+    },
+
+    // dottydoc really doesn't work at all right now
+    Compile / doc / sources := {
+      val old = (Compile / doc / sources).value
+      if (isDotty.value)
+        Seq()
+      else
+        old
     })
 }
