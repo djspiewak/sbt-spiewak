@@ -239,7 +239,12 @@ object SpiewakPlugin extends AutoPlugin {
         Seq("-language:_")
     },
 
-    Test / scalacOptions += "-Yrangepos",
+    Test / scalacOptions ++= {
+      if (isDotty.value)
+        Seq()
+      else
+        Seq("-Yrangepos")
+    },
 
     Compile / console / scalacOptions --= Seq("-Xlint", "-Ywarn-unused-import"),
     Test / console / scalacOptions := (scalacOptions in (Compile, console)).value,
