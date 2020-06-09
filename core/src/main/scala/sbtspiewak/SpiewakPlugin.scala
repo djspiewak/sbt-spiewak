@@ -158,7 +158,7 @@ object SpiewakPlugin extends AutoPlugin {
     },
 
     scalacOptions ++= {
-      if (githubIsWorkflowBuild.value)
+      if (githubIsWorkflowBuild.value && !isDotty.value)
         Seq("-Xfatal-warnings")
       else
         Seq.empty
