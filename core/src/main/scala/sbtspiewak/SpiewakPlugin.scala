@@ -28,6 +28,8 @@ import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
 
 import _root_.io.crashbox.gpg.SbtGpg
 
+import sbtcrossproject.CrossPlugin, CrossPlugin.autoImport.crossProjectPlatform
+
 import sbtghactions.{GenerativeKeys, GenerativePlugin, GitHubActionsKeys, GitHubActionsPlugin}, GenerativeKeys._, GitHubActionsKeys._
 
 import scala.sys.process._
@@ -42,6 +44,7 @@ object SpiewakPlugin extends AutoPlugin {
     GenerativePlugin &&
     MimaPlugin &&
     DottyPlugin &&
+    CrossPlugin &&
     plugins.JvmPlugin
 
   override def trigger = allRequirements
@@ -60,13 +63,28 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val publishGithubUser = settingKey[String]("The github username of the main developer")
     lazy val publishFullName = settingKey[String]("The full name of the main developer")
 
-    def noPublishSettings = Seq(
+    lazy val testIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
+
+    val noPublishSettings = Seq(
       publish := {},
       publishLocal := {},
       publishArtifact := false,
 
       mimaPreviousArtifacts := Set.empty,
       skip in publish := true)
+
+    val dottyLibrarySettings = Seq(
+      libraryDependencies :=
+        libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)))
+
+    val dottyJsSettings = Seq(
+      crossScalaVersions := {
+        val old = crossScalaVersions.value
+        if (isDotty.value && crossProjectPlatform.value.identifier != "jvm")
+          old.filter(_.startsWith("2."))
+        else
+          old
+      })
 
     // why isn't this in sbt itself?
     def replaceCommandAlias(name: String, contents: String): Seq[Setting[State => State]] =
@@ -83,7 +101,7 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
-    addCommandAlias("ci", "; project /; headerCheck; clean; test; mimaReportBinaryIssues") ++
+    addCommandAlias("ci", "; project /; headerCheck; clean; testIfRelevant; mimaReportBinaryIssues") ++
     Seq(
       organizationName := publishFullName.value,
 
@@ -134,6 +152,16 @@ object SpiewakPlugin extends AutoPlugin {
       git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true))
 
   override def projectSettings = AutomateHeaderPlugin.projectSettings ++ Seq(
+    Test / testIfRelevant := Def.taskDyn {
+      val cross = crossScalaVersions.value
+      val ver = scalaVersion.value
+
+      if (cross.contains(ver))
+        Def.task((Test / test).value)
+      else
+        Def.task(streams.value.log.warn(s"skipping `test` in ${name.value}: $ver is not in $cross"))
+    }.value,
+
     libraryDependencies ++= {
       if (isDotty.value)
         Nil
