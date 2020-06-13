@@ -99,6 +99,10 @@ object SpiewakPlugin extends AutoPlugin {
 
   private val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
 
+  override def globalSettings = Seq(
+    crossScalaVersions := Seq("2.13.2"),
+    Def.derive(scalaVersion := crossScalaVersions.value.last))
+
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("ci", "; project /; headerCheck; clean; testIfRelevant; mimaReportBinaryIssues") ++

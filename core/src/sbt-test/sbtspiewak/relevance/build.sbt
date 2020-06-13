@@ -1,4 +1,3 @@
-ThisBuild / scalaVersion := crossScalaVersions.value.last
 ThisBuild / crossScalaVersions := Seq("2.12.11", "2.13.2")
 
 ThisBuild / baseVersion := "0.1"
