@@ -30,7 +30,7 @@ import _root_.io.crashbox.gpg.SbtGpg
 
 import sbtcrossproject.CrossPlugin, CrossPlugin.autoImport.crossProjectPlatform
 
-import sbtghactions.{GenerativeKeys, GenerativePlugin, GitHubActionsKeys, GitHubActionsPlugin}, GenerativeKeys._, GitHubActionsKeys._
+import sbtghactions.{GenerativeKeys, GenerativePlugin, GitHubActionsKeys, GitHubActionsPlugin, WorkflowStep}, GenerativeKeys._, GitHubActionsKeys._
 
 import scala.sys.process._
 import scala.util.Try
@@ -118,6 +118,7 @@ object SpiewakPlugin extends AutoPlugin {
 
       // disable automatic generation of the publication workflow
       githubWorkflowPublishTargetBranches := Seq(),
+      githubWorkflowBuild := WorkflowStep.Sbt(List("ci")),
 
       isSnapshot := version.value endsWith "SNAPSHOT",
 
