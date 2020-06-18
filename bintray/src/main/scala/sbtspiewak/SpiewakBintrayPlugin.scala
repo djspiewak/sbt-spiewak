@@ -27,8 +27,9 @@ object SpiewakBintrayPlugin extends AutoPlugin {
 
   override def trigger = allRequirements
 
+  // TODO this doesn't quite work with Dotty + ScalaJS
   override def buildSettings =
-    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publish; +bintrayRelease") ++
+    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssues; +bintrayEnsureBintrayPackageExists; +publishIfRelevant; +bintrayRelease") ++
     Seq(
       bintray / credentials := {
         val old = (bintray / credentials).value

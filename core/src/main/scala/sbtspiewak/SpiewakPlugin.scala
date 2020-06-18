@@ -66,6 +66,9 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val testIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
     lazy val mimaReportBinaryIssuesIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
 
+    lazy val publishIfRelevant = taskKey[Unit]("A wrapper around the `publish` task which checks to ensure the current scalaVersion is in crossScalaVersions")
+    lazy val publishLocalIfRelevant = taskKey[Unit]("A wrapper around the `publishLocal` task which checks to ensure the current scalaVersion is in crossScalaVersions")
+
     val noPublishSettings = Seq(
       publish := {},
       publishLocal := {},
@@ -107,6 +110,7 @@ object SpiewakPlugin extends AutoPlugin {
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("ci", "; project /; headerCheck; clean; testIfRelevant; mimaReportBinaryIssuesIfRelevant") ++
+    addCommandAlias("releaseLocal", "; reload; project /; +publishLocalIfRelevant") ++
     Seq(
       organizationName := publishFullName.value,
 
@@ -178,6 +182,26 @@ object SpiewakPlugin extends AutoPlugin {
         else
           Def.task(streams.value.log.warn(s"skipping `mimaReportBinaryIssues` in ${name.value}: $ver is not in $cross"))
       }.value,
+
+      publishIfRelevant := Def.taskDyn {
+        val cross = crossScalaVersions.value
+        val ver = scalaVersion.value
+
+        if (cross.contains(ver))
+          Def.task(publish.value)
+        else
+          Def.task(streams.value.log.warn(s"skipping `publish` in ${name.value}: $ver is not in $cross"))
+      },
+
+      publishLocalIfRelevant := Def.taskDyn {
+        val cross = crossScalaVersions.value
+        val ver = scalaVersion.value
+
+        if (cross.contains(ver))
+          Def.task(publishLocal.value)
+        else
+          Def.task(streams.value.log.warn(s"skipping `publishLocal` in ${name.value}: $ver is not in $cross"))
+      },
 
       libraryDependencies ++= {
         if (isDotty.value)
