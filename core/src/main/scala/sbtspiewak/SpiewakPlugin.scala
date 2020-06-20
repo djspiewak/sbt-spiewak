@@ -90,6 +90,17 @@ object SpiewakPlugin extends AutoPlugin {
           default
       })
 
+    def filterTaskWhereRelevant(delegate: TaskKey[Unit]) =
+      Def.taskDyn {
+        val cross = crossScalaVersions.value
+        val ver = scalaVersion.value
+
+        if (cross.contains(ver))
+          Def.task(delegate.value)
+        else
+          Def.task(streams.value.log.warn(s"skipping `${delegate.key.label}` in ${name.value}: $ver is not in $cross"))
+      }
+
     // why isn't this in sbt itself?
     def replaceCommandAlias(name: String, contents: String): Seq[Setting[State => State]] =
       Seq(GlobalScope / onLoad ~= { (f: State => State) =>
@@ -163,45 +174,10 @@ object SpiewakPlugin extends AutoPlugin {
   override def projectSettings =
     AutomateHeaderPlugin.projectSettings ++
     Seq(
-      Test / testIfRelevant := Def.taskDyn {
-        val cross = crossScalaVersions.value
-        val ver = scalaVersion.value
-
-        if (cross.contains(ver))
-          Def.task((Test / test).value)
-        else
-          Def.task(streams.value.log.warn(s"skipping `test` in ${name.value}: $ver is not in $cross"))
-      }.value,
-
-      mimaReportBinaryIssuesIfRelevant := Def.taskDyn {
-        val cross = crossScalaVersions.value
-        val ver = scalaVersion.value
-
-        if (cross.contains(ver))
-          Def.task(mimaReportBinaryIssues.value)
-        else
-          Def.task(streams.value.log.warn(s"skipping `mimaReportBinaryIssues` in ${name.value}: $ver is not in $cross"))
-      }.value,
-
-      publishIfRelevant := Def.taskDyn {
-        val cross = crossScalaVersions.value
-        val ver = scalaVersion.value
-
-        if (cross.contains(ver))
-          Def.task(publish.value)
-        else
-          Def.task(streams.value.log.warn(s"skipping `publish` in ${name.value}: $ver is not in $cross"))
-      },
-
-      publishLocalIfRelevant := Def.taskDyn {
-        val cross = crossScalaVersions.value
-        val ver = scalaVersion.value
-
-        if (cross.contains(ver))
-          Def.task(publishLocal.value)
-        else
-          Def.task(streams.value.log.warn(s"skipping `publishLocal` in ${name.value}: $ver is not in $cross"))
-      },
+      Test / testIfRelevant := filterTaskWhereRelevant(Test / test).value,
+      mimaReportBinaryIssuesIfRelevant := filterTaskWhereRelevant(mimaReportBinaryIssues).value,
+      publishIfRelevant := filterTaskWhereRelevant(publish).value,
+      publishLocalIfRelevant := filterTaskWhereRelevant(publishLocal).value,
 
       libraryDependencies ++= {
         if (isDotty.value)
