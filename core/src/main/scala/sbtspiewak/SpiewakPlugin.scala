@@ -133,7 +133,7 @@ object SpiewakPlugin extends AutoPlugin {
 
       // disable automatic generation of the publication workflow
       githubWorkflowPublishTargetBranches := Seq(),
-      githubWorkflowBuild := WorkflowStep.Sbt(List("ci")),
+      githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("ci"))),
 
       isSnapshot := version.value endsWith "SNAPSHOT",
 
