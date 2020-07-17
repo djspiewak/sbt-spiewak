@@ -196,7 +196,7 @@ object SpiewakPlugin extends AutoPlugin {
       scalacOptions ++= {
         scalaVersion.value match {
           case FullScalaVersion(2, minor, _, _, _) if minor < 13 =>
-            Seq("-Yno-adapted-args")
+            Seq("-Yno-adapted-args", "-Ywarn-unused-import")
           case _ =>
             Seq.empty
         }
@@ -210,16 +210,30 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       scalacOptions ++= {
-        val YwarnUnusedImport = "-Ywarn-unused-import"
-
         val warningsNsc = Seq("-Xlint", "-Ywarn-dead-code")
-        val warningsDotty = Seq()
 
         val warnings211 = Seq(
-          YwarnUnusedImport, // Not available in 2.10
           "-Ywarn-numeric-widen") // In 2.10 this produces a some strange spurious error
 
         val warnings212 = Seq("-Xlint:-unused,_")
+
+        val removed213 = Set("-Xlint:-unused,_", "-Xlint")
+        val warnings213 = Seq(
+          "-Xlint:deprecation",
+          "-Wunused:nowarn",
+          "-Wdead-code",
+          "-Wextra-implicit",
+          "-Wnumeric-widen",
+          "-Wunused:implicits",
+          "-Wunused:explicits",
+          "-Wunused:imports",
+          "-Wunused:locals",
+          "-Wunused:params",
+          "-Wunused:patvars",
+          "-Wunused:privates",
+          "-Wvalue-discard")
+
+        val warningsDotty = Seq()
 
         scalaVersion.value match {
           case FullScalaVersion(0, minor, _, _, _) if minor >= 24 =>
@@ -229,7 +243,7 @@ object SpiewakPlugin extends AutoPlugin {
             warningsDotty
 
           case FullScalaVersion(2, minor, _, _, _) if minor >= 13 =>
-            (warnings211 ++ warnings212 ++ warningsNsc).filterNot(_ == YwarnUnusedImport)    // no idea where this went...
+            (warnings211 ++ warnings212 ++ warnings213 ++ warningsNsc).filterNot(removed213)
 
           case FullScalaVersion(2, minor, _, _, _) if minor >= 12 =>
             warnings211 ++ warnings212 ++ warningsNsc
