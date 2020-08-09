@@ -305,7 +305,18 @@ object SpiewakPlugin extends AutoPlugin {
           Seq("-Yrangepos")
       },
 
-      Compile / console / scalacOptions --= Seq("-Xlint", "-Ywarn-unused-import"),
+      Compile / console / scalacOptions --= Seq(
+        "-Xlint",
+        "-Ywarn-unused-import",
+        "-Wextra-implicit",
+        "-Wunused:implicits",
+        "-Wunused:explicits",
+        "-Wunused:imports",
+        "-Wunused:locals",
+        "-Wunused:params",
+        "-Wunused:patvars",
+        "-Wunused:privates"),
+
       Test / console / scalacOptions := (scalacOptions in (Compile, console)).value,
 
       libraryDependencies ++= {
