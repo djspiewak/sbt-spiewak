@@ -342,7 +342,7 @@ object SpiewakPlugin extends AutoPlugin {
 
         val isPre = major == 0
 
-        if (sbtPlugin.value) {
+        if (sbtPlugin.value || !crossProjectPlatform.?.value.map(_.identifier == "jvm").getOrElse(true)) {
           Set.empty
         } else {
           val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
