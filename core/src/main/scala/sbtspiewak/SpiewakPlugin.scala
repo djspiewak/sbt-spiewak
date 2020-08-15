@@ -348,13 +348,14 @@ object SpiewakPlugin extends AutoPlugin {
           val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
 
           // in semver, we allow breakage in minor releases if major is 0, otherwise not
-          val prefix = if (isPre || !strictSemVer.value)
-            s"v$major.$minor"
+          val Pattern = if (isPre || !strictSemVer.value)
+            s"^v($major\\.$minor\\.\\d+)$$".r
           else
-            s"v$major"
+            s"^v($major\\.\\d+\\.\\d+)$$".r
 
-          val versions =
-            tags.filter(_.startsWith(prefix)).map(_.substring(1))
+          val versions = tags collect {
+            case Pattern(version) => version
+          }
 
           versions.filterNot(current ==).map(v => org %% n % v).toSet
         }
