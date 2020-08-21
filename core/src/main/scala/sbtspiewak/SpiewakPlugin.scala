@@ -169,7 +169,10 @@ object SpiewakPlugin extends AutoPlugin {
         }
       },
 
-      git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true))
+      git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true),
+
+      git.gitHeadCommit := Try("git rev-parse HEAD".!!.trim).toOption,
+      git.gitCurrentTags := Try("git tag --contains HEAD".!!.trim.split("\\s+").toList).toOption.toList.flatten)
 
   override def projectSettings =
     AutomateHeaderPlugin.projectSettings ++
@@ -318,6 +321,39 @@ object SpiewakPlugin extends AutoPlugin {
         "-Wunused:privates"),
 
       Test / console / scalacOptions := (scalacOptions in (Compile, console)).value,
+
+      Compile / doc / scalacOptions ++= {
+        val isSnapshot = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.isEmpty
+
+        val path =
+          if (isSnapshot)
+            scmInfo.value.get.browseUrl + "/blob/" + git.gitHeadCommit.value.get + "€{FILE_PATH}.scala"
+          else
+            scmInfo.value.get.browseUrl + "/blob/v" + version.value + "€{FILE_PATH}.scala"
+
+        Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+      },
+
+      scalacOptions ++= {
+        if (crossProjectPlatform.?.value.map(_.identifier == "js").getOrElse(false)) {
+          val hasVersion = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.nonEmpty
+          val versionOrHash =
+            if (hasVersion)
+              Some(s"v${version.value}")
+            else
+              git.gitHeadCommit.value
+
+          val l = (LocalRootProject / baseDirectory).value.toURI.toString
+
+          val info = scmInfo.value
+          versionOrHash map { v =>
+            val g = s"${info.get.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$versionOrHash/"
+            s"-P:scalajs:mapSourceURI:$l->$g"
+          }
+        } else {
+          None
+        }
+      },
 
       libraryDependencies ++= {
         scalaVersion.value match {
