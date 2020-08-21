@@ -59,6 +59,7 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val baseVersion = git.baseVersion
 
     lazy val strictSemVer = settingKey[Boolean]("Set to true to forbid breaking changes in the minor releases (strict semantic versioning)")
+    lazy val fatalWarningsInCI = settingKey[Boolean]("Convert compiler warnings into errors under CI builds (default: true)")
 
     lazy val publishGithubUser = settingKey[String]("The github username of the main developer")
     lazy val publishFullName = settingKey[String]("The full name of the main developer")
@@ -115,6 +116,7 @@ object SpiewakPlugin extends AutoPlugin {
   private val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
 
   override def globalSettings = Seq(
+    fatalWarningsInCI := true,
     crossScalaVersions := Seq("2.13.2"),
     Def.derive(scalaVersion := crossScalaVersions.value.last, default = true))
 
@@ -206,7 +208,7 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       scalacOptions ++= {
-        if (githubIsWorkflowBuild.value && !isDotty.value)
+        if (githubIsWorkflowBuild.value && !isDotty.value && fatalWarningsInCI.value)
           Seq("-Xfatal-warnings")
         else
           Seq.empty
