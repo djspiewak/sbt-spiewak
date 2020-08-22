@@ -329,13 +329,18 @@ object SpiewakPlugin extends AutoPlugin {
       Compile / doc / scalacOptions ++= {
         val isSnapshot = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.isEmpty
 
-        val path =
-          if (isSnapshot)
-            scmInfo.value.get.browseUrl + "/blob/" + git.gitHeadCommit.value.get + "€{FILE_PATH}.scala"
+        val versionOrHash =
+          if (!isSnapshot)
+            Some(s"v${version.value}")
           else
-            scmInfo.value.get.browseUrl + "/blob/v" + version.value + "€{FILE_PATH}.scala"
+            git.gitHeadCommit.value
 
-        Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+        val info = scmInfo.value
+        versionOrHash.toSeq flatMap { vh =>
+          val path = s"$info/blob/$vh€{FILE_PATH}.scala"
+
+          Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+        }
       },
 
       scalacOptions ++= {
