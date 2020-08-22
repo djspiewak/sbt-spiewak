@@ -335,11 +335,12 @@ object SpiewakPlugin extends AutoPlugin {
           else
             git.gitHeadCommit.value
 
-        val info = scmInfo.value
+        val infoOpt = scmInfo.value
         versionOrHash.toSeq flatMap { vh =>
-          val path = s"$info/blob/$vh€{FILE_PATH}.scala"
-
-          Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+          infoOpt.toSeq flatMap { info =>
+            val path = s"${info.browseUrl}/blob/$vh€{FILE_PATH}.scala"
+            Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+          }
         }
       },
 
@@ -354,10 +355,12 @@ object SpiewakPlugin extends AutoPlugin {
 
           val l = (LocalRootProject / baseDirectory).value.toURI.toString
 
-          val info = scmInfo.value
-          versionOrHash map { v =>
-            val g = s"${info.get.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$versionOrHash/"
-            s"-P:scalajs:mapSourceURI:$l->$g"
+          val infoOpt = scmInfo.value
+          versionOrHash flatMap { v =>
+            infoOpt map { info =>
+              val g = s"${info.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$versionOrHash/"
+              s"-P:scalajs:mapSourceURI:$l->$g"
+            }
           }
         } else {
           None
