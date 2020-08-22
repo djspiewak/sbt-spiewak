@@ -430,6 +430,16 @@ object SpiewakPlugin extends AutoPlugin {
         new RuleTransformer(stripTestScope).transform(node)(0)
       },
 
+      Compile / unmanagedSourceDirectories += {
+        val old = (Compile / scalaSource).value
+        old.getParentFile() / (old.getName() + s"-${if (isDotty.value) "3" else "2"}")
+      },
+
+      Test / unmanagedSourceDirectories += {
+        val old = (Test / scalaSource).value
+        old.getParentFile() / (old.getName() + s"-${if (isDotty.value) "3" else "2"}")
+      },
+
       // dottydoc really doesn't work at all right now
       Compile / doc / sources := {
         val old = (Compile / doc / sources).value
