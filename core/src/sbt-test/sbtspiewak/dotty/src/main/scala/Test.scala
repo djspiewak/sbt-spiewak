@@ -16,7 +16,10 @@ object Test {
 
   42.bippy()
 
-  implicit def unitToString(u: Unit): String = "unit"
+  implicit def unitToString(u: Unit): String = {
+    val _ = u
+    "unit"
+  }
 
   val s: String = ()
 }
