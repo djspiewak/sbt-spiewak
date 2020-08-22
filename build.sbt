@@ -30,6 +30,13 @@ Global / sbtVersion := "1.3.13"
 
 ThisBuild / crossScalaVersions := Seq("2.12.11")
 
+ThisBuild / githubWorkflowBuildPreamble +=
+  WorkflowStep.Run(
+    List(
+      "git config --global user.email nobody@github.com",
+      "git config --global user.name 'GitHub Actions'"),
+    name = Some("Configure git"))
+
 lazy val root = project
   .aggregate(core, bintray, sonatype)
   .in(file("."))
