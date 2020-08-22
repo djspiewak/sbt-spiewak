@@ -58,8 +58,9 @@ object SpiewakPlugin extends AutoPlugin {
      */
     lazy val baseVersion = git.baseVersion
 
-    lazy val strictSemVer = settingKey[Boolean]("Set to true to forbid breaking changes in the minor releases (strict semantic versioning)")
+    lazy val strictSemVer = settingKey[Boolean]("Set to true to forbid breaking changes in the minor releases (strict semantic versioning; default: true)")
     lazy val fatalWarningsInCI = settingKey[Boolean]("Convert compiler warnings into errors under CI builds (default: true)")
+    lazy val versionIntroduced = settingKey[Map[String, String]]("A map from *binary* scalaVersion -> version (e.g. '2.13') used to indicate that a particular crossScalaVersions value was introduced in a given version (default: empty)")
 
     lazy val publishGithubUser = settingKey[String]("The github username of the main developer")
     lazy val publishFullName = settingKey[String]("The full name of the main developer")
@@ -117,6 +118,7 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def globalSettings = Seq(
     fatalWarningsInCI := true,
+    versionIntroduced := Map(),
     crossScalaVersions := Seq("2.13.2"),
     Def.derive(scalaVersion := crossScalaVersions.value.last, default = true))
 
@@ -378,7 +380,7 @@ object SpiewakPlugin extends AutoPlugin {
         val TagBase = """^(\d+)\.(\d+).*"""r
         val TagBase(major, minor) = baseVersion.value
 
-        val isPre = major == 0
+        val isPre = major.toInt == 0
 
         if (sbtPlugin.value || !crossProjectPlatform.?.value.map(_.identifier == "jvm").getOrElse(true)) {
           Set.empty
@@ -395,7 +397,24 @@ object SpiewakPlugin extends AutoPlugin {
             case Pattern(version) => version
           }
 
-          versions.filterNot(current ==).map(v => org %% n % v).toSet
+          val notCurrent = versions.filterNot(current ==)
+
+          val FullVersion = """^(\d+)\.(\d+)\.(\d+)$""".r
+          val reduced = versionIntroduced.value.get(CrossVersion.binaryScalaVersion(scalaVersion.value)) match {
+            case Some(FullVersion(boundMaj, boundMin, boundRev)) =>
+              // we assume you don't want more than 1000 versions per component
+              val boundOrd = boundMaj.toInt * 1000 * 1000 + boundMin.toInt * 1000 + boundRev.toInt * 1000
+
+              versions filter {
+                case FullVersion(maj, min, rev) =>
+                  (maj.toInt * 1000 * 1000 + min.toInt * 1000 + rev.toInt * 1000) >= boundOrd
+              }
+
+            case None =>
+              versions
+          }
+
+          reduced.map(v => org % s"${n}_${CrossVersion.binaryScalaVersion(scalaVersion.value)}" % v).toSet
         }
       },
 
