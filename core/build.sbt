@@ -1,4 +1,4 @@
-addSbtPlugin("com.codecommit"     % "sbt-github-actions" % "0.9.1")
+addSbtPlugin("com.codecommit"     % "sbt-github-actions" % "0.9.2")
 addSbtPlugin("com.typesafe.sbt"   % "sbt-git"            % "1.0.0")
 addSbtPlugin("de.heikoseeberger"  % "sbt-header"         % "5.6.0")
 addSbtPlugin("com.typesafe"       % "sbt-mima-plugin"    % "0.7.0")
