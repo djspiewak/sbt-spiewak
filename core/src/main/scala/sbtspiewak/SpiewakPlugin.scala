@@ -81,15 +81,31 @@ object SpiewakPlugin extends AutoPlugin {
 
     val dottyLibrarySettings = Seq(
       libraryDependencies :=
-        libraryDependencies.value.map(_.withDottyCompat(scalaVersion.value)))
+        libraryDependencies.value map { lib =>
+          // hack to avoid slapping dotty compat on the SJS dotty lib
+          if (lib.organization != "ch.epfl.lamp" && lib.name != "dotty_library")
+            lib.withDottyCompat(scalaVersion.value)
+          else
+            lib
+        })
 
+    /**
+     * Only required if you have Dotty versions prior to 0.27.0-RC1 in your
+     * crossScalaVersions. This shim will eventually be removed.
+     */
     def dottyJsSettings(defaultCrossScalaVersions: SettingKey[Seq[String]]) = Seq(
       crossScalaVersions := {
         val default = defaultCrossScalaVersions.value
-        if (crossProjectPlatform.value.identifier != "jvm")
-          default.filter(_.startsWith("2."))
-        else
+
+        if (crossProjectPlatform.value.identifier != "jvm") {
+          default collect {
+            case v @ FullScalaVersion(2, _, _, _, _) => v
+            case v @ FullScalaVersion(3, _, _, _, _) => v
+            case v @ FullScalaVersion(0, min, _, _, _) if min >= 27 => v
+          }
+        } else {
           default
+        }
       })
 
     def filterTaskWhereRelevant(delegate: TaskKey[Unit]) =
