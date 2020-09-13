@@ -361,7 +361,8 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       scalacOptions ++= {
-        if (crossProjectPlatform.?.value.map(_.identifier == "js").getOrElse(false)) {
+        // Dotty doesn't understand -P for the moment (lampepfl/dotty#9783)
+        if (!isDotty.value && crossProjectPlatform.?.value.map(_.identifier == "js").getOrElse(false)) {
           val hasVersion = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.nonEmpty
           val versionOrHash =
             if (hasVersion)
