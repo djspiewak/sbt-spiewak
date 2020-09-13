@@ -374,7 +374,7 @@ object SpiewakPlugin extends AutoPlugin {
           val infoOpt = scmInfo.value
           versionOrHash flatMap { v =>
             infoOpt map { info =>
-              val g = s"${info.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$versionOrHash/"
+              val g = s"${info.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$v/"
               s"-P:scalajs:mapSourceURI:$l->$g"
             }
           }
