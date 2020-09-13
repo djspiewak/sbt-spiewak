@@ -28,7 +28,7 @@ import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
 
 import _root_.io.crashbox.gpg.SbtGpg
 
-import sbtcrossproject.CrossPlugin, CrossPlugin.autoImport.crossProjectPlatform
+import sbtcrossproject.{CrossPlugin, CrossType}, CrossPlugin.autoImport.crossProjectPlatform
 
 import sbtghactions.{GenerativeKeys, GenerativePlugin, GitHubActionsKeys, GitHubActionsPlugin, WorkflowStep}, GenerativeKeys._, GitHubActionsKeys._
 
@@ -454,14 +454,16 @@ object SpiewakPlugin extends AutoPlugin {
         new RuleTransformer(stripTestScope).transform(node)(0)
       },
 
-      Compile / unmanagedSourceDirectories += {
-        val old = (Compile / scalaSource).value
-        old.getParentFile() / (old.getName() + s"-${if (isDotty.value) "3" else "2"}")
+      Compile / unmanagedSourceDirectories ++= {
+        val major = if (isDotty.value) "-3" else "-2"
+        List(CrossType.Pure, CrossType.Full).flatMap(
+          _.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + major)))
       },
 
-      Test / unmanagedSourceDirectories += {
-        val old = (Test / scalaSource).value
-        old.getParentFile() / (old.getName() + s"-${if (isDotty.value) "3" else "2"}")
+      Test / unmanagedSourceDirectories ++= {
+        val major = if (isDotty.value) "-3" else "-2"
+        List(CrossType.Pure, CrossType.Full).flatMap(
+          _.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + major)))
       },
 
       // dottydoc really doesn't work at all right now
