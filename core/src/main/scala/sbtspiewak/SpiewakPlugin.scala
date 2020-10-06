@@ -50,8 +50,8 @@ object SpiewakPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   object autoImport {
-    // strictly x.y.z
-    val ReleaseTag = """^v((?:\d+\.){2}\d+)$""".r
+
+    val ReleaseTag = """^v((?:\d+\.){2}\d+)(?:-.*)?$""".r
 
     /**
      * https://github.com/djspiewak/sbt-spiewak/versioning/blob/589b9ea/versioning.md
