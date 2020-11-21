@@ -21,12 +21,12 @@ Global / organization := "com.codecommit"
 Global / publishGithubUser := "djspiewak"
 Global / publishFullName := "Daniel Spiewak"
 
-Global / baseVersion := "0.16"
+Global / baseVersion := "0.18"
 
 Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.4.0"
+Global / sbtVersion := "1.4.3"
 
 ThisBuild / crossScalaVersions := Seq("2.12.12")
 
