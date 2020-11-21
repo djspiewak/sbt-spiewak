@@ -71,6 +71,7 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val publishIfRelevant = taskKey[Unit]("A wrapper around the `publish` task which checks to ensure the current scalaVersion is in crossScalaVersions")
     lazy val publishLocalIfRelevant = taskKey[Unit]("A wrapper around the `publishLocal` task which checks to ensure the current scalaVersion is in crossScalaVersions")
 
+    @deprecated("Use .enablePlugin(NoPublishPlugin)", "0.18.0")
     val noPublishSettings = Seq(
       publish := {},
       publishLocal := {},

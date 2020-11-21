@@ -41,7 +41,7 @@ lazy val root = project
   .aggregate(core, bintray, sonatype)
   .in(file("."))
   .settings(name := "root")
-  .settings(noPublishSettings)
+  .enablePlugins(NoPublishPlugin)
 
 lazy val core = project
   .in(file("core"))

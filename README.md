@@ -36,14 +36,14 @@ publishFullName in ThisBuild := "Daniel Spiewak"
 
 Or something like that.
 
-If you have a multi-module build and need a subproject to *not* publish (as is commonly done with the `root` project), bring in `noPublishSettings`. For example:
+If you have a multi-module build and need a subproject to *not* publish (as is commonly done with the `root` project), enable the `NoPublishPlugin`. For example:
 
 ```sbt
 lazy val root = project
   .aggregate(core, bintray, sonatype)
   .in(file("."))
   .settings(name := "root")
-  .settings(noPublishSettings)
+  .enablePlugins(NoPublishPlugin)
 ```
 
 ## Features
