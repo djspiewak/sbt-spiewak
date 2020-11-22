@@ -26,12 +26,12 @@ addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "<version>")
 Then, in your `build.sbt`, make sure you set a value for `baseVersion`, `organization`, `publishGithubUser` and `publishFullName`:
 
 ```sbt
-organization in ThisBuild := "com.codecommit"
+ThisBuild / organization := "com.codecommit"
 
-baseVersion in ThisBuild := "0.1"
+ThisBuild / baseVersion  := "0.1"
 
-publishGithubUser in ThisBuild := "djspiewak"
-publishFullName in ThisBuild := "Daniel Spiewak"
+ThisBuild / publishGithubUser := "djspiewak"
+ThisBuild / publishFullName   := "Daniel Spiewak"
 ```
 
 Or something like that.
@@ -78,7 +78,7 @@ lazy val root = project
 You will need to additionally define the following setting:
 
 ```sbt
-bintrayVcsUrl in Global := Some("git@github.com:you/your-repo.git")
+Global / bintrayVcsUrl := Some("git@github.com:you/your-repo.git")
 ```
 
 Check [sbt-bintray credentials](https://github.com/sbt/sbt-bintray#Credentials) on how to authenticate.
@@ -88,9 +88,9 @@ Check [sbt-bintray credentials](https://github.com/sbt/sbt-bintray#Credentials) 
 You will additionally need to define the following settings:
 
 ```sbt
-homepage in Global := Some(url("https://github.com/djspiewak/sbt-spiewak")),
+Global / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak")),
 
-scmInfo in Global := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewak"),
+Global / scmInfo := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewak"),
   "git@github.com:djspiewak/sbt-spiewak.git")))
 ```
 
@@ -102,4 +102,4 @@ You may consider overriding any of the following keys, which are hard-coded to d
 - `developers` (defaults to just yourself, using the `publishFullName` and `publishGithubUser`)
 - `startYear` (defaults to 2018)
 - `strictSemVer` (defaults to `true`)
-  + When set to `true`, it disallows breaking binary compatibility in any release which does not increment the *major* component unless the major component is `0` (i.e. semantic versioning). Many Scala projects break binary compatibility in *minor* releases, such as Scala itself. This scheme is sometimes referred to as "scala ver". Setting `strictSemVer in ThisBuild := false` will relax the MiMa compatibility checks and allow you to perform such breakage if desired.
+  + When set to `true`, it disallows breaking binary compatibility in any release which does not increment the *major* component unless the major component is `0` (i.e. semantic versioning). Many Scala projects break binary compatibility in *minor* releases, such as Scala itself. This scheme is sometimes referred to as "scala ver". Setting `ThisBuild / strictSemVer := false` will relax the MiMa compatibility checks and allow you to perform such breakage if desired.
