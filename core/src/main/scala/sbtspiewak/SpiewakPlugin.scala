@@ -147,7 +147,7 @@ object SpiewakPlugin extends AutoPlugin {
     GitPlugin.autoImport.versionWithGit ++
     addCommandAlias("ci", List(
       "project /",
-      "headerCheck",
+      "headerCheckAll",
       "clean",
       "unusedCompileDependenciesTestIfRelevant",
       "testIfRelevant",
@@ -220,7 +220,7 @@ object SpiewakPlugin extends AutoPlugin {
         if (isDotty.value)
           Nil
         else
-          Seq(compilerPlugin("org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full))
+          Seq(compilerPlugin("org.typelevel" % "kind-projector" % "0.11.1" cross CrossVersion.full))
       },
 
       // Adapted from Rob Norris' post at https://tpolecat.github.io/2014/04/11/scalac-flags.html
@@ -396,6 +396,18 @@ object SpiewakPlugin extends AutoPlugin {
         } else {
           None
         }
+      },
+
+      javacOptions ++= Seq(
+        "-encoding", "utf8",
+        "-Xlint:all",
+      ),
+
+      javacOptions ++= {
+        if (githubIsWorkflowBuild.value && !isDotty.value && fatalWarningsInCI.value)
+          Seq("-Werror")
+        else
+          Seq.empty
       },
 
       libraryDependencies ++= {
