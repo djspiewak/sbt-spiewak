@@ -46,6 +46,40 @@ lazy val root = project
   .enablePlugins(NoPublishPlugin)
 ```
 
+## CI Release
+
+If you would like your releases to be published by your CI process, rather than locally, you will probably benefit from the `SonatypeCiRelease` plugin (part of sbt-spiewak-sonatype). This makes some assumptions about your secrets and general build configuration, applies the settings to the sbt-github-actions-generated workflow, and generally takes care of everything for you.
+
+To use, add the following to the root level of your build.sbt:
+
+```sbt
+enablePlugins(SonatypeCiRelease)
+```
+
+Then, configure the following encrypted secrets within GitHub Actions:
+
+- `SONATYPE_USERNAME`
+- `SONATYPE_PASSWORD`
+- `PGP_SECRET`
+
+You can obtain the `PGP_SECRET` by running `gpg --export-secret-keys | base64`. Please make sure that this key is *not* password protected in the export (GitHub Actions itself will encrypt it).
+
+Once this is done, decide whether you would like snapshots to be published on every master build. By default, releases will only be published on version tags. If you wish to override this, set the following:
+
+```sbt
+ThisBuild / spiewakCiReleaseSnapshots := true
+```
+
+Also optionally, you can override the name of the primary branch. By default, `SonatypeCiRelease` assumes the primary branch is named `master`. If you have renamed your primary branch, make sure to reconfigure the value:
+
+```sbt
+ThisBuild / spiewakMainBranch := "main"
+```
+
+With all of these steps out of the way, you should have some nice, reliable, CI-driven releases going forward!
+
+**Caveat:** If you *are* publishing snapshots on your primary branch, you will need to be careful to ensure that new tags are fully built on the primary branch *before* you push the tag to the upstream. The reason for this is the fact that tags are visible to the primary branch builds, meaning that if you push a new commit to master *and* a tag which points to it, that commit and tag will build *and release* under the same name simultaneously. The workaround is to push master, wait for the snapshot release to complete, and then push the tag. I'll get around to fixing this someday...
+
 ## Features
 
 - Baseline plugin setup
