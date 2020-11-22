@@ -132,6 +132,7 @@ object SpiewakPlugin extends AutoPlugin {
   import autoImport._
 
   private val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
+  private val Description = """^.*-(\d+)-[a-zA-Z0-9]+$""".r
 
   override def globalSettings = Seq(
     fatalWarningsInCI := true,
@@ -185,8 +186,15 @@ object SpiewakPlugin extends AutoPlugin {
       git.formattedShaVersion := {
         val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
 
+        val description = Try("git describe --tags --match v*".!!.trim).toOption
+        val optDistance = description collect {
+          case Description(distance) => distance + "-"
+        }
+
+        val distance = optDistance.getOrElse("")
+
         git.gitHeadCommit.value map { _.substring(0, 7) } map { sha =>
-          git.baseVersion.value + "-" + sha + suffix
+          git.baseVersion.value + "-" + distance + sha + suffix
         }
       },
 
