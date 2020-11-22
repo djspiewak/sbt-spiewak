@@ -26,6 +26,8 @@ import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
 
 import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
 
+import explicitdeps.ExplicitDepsPlugin.autoImport._
+
 import _root_.io.crashbox.gpg.SbtGpg
 
 import sbtcrossproject.{CrossPlugin, CrossType}, CrossPlugin.autoImport.crossProjectPlatform
@@ -65,6 +67,8 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val publishGithubUser = settingKey[String]("The github username of the main developer")
     lazy val publishFullName = settingKey[String]("The full name of the main developer")
 
+    lazy val undeclaredCompileDependenciesTestIfRelevant = taskKey[Unit]("A wrapper around the `undeclaredCompileDependenciesTest` task which checks to ensure the current scalaVersion is in crossScalaVersions and the platform is the JVM")
+    lazy val unusedCompileDependenciesTestIfRelevant = taskKey[Unit]("A wrapper around the `unusedCompileDependenciesTest` task which checks to ensure the current scalaVersion is in crossScalaVersions and the platform is the JVM")
     lazy val testIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
     lazy val mimaReportBinaryIssuesIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
 
@@ -142,7 +146,14 @@ object SpiewakPlugin extends AutoPlugin {
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
-    addCommandAlias("ci", "; project /; headerCheckAll; clean; testIfRelevant; mimaReportBinaryIssuesIfRelevant") ++
+    addCommandAlias("ci", List(
+      "project /",
+      "headerCheckAll",
+      "clean",
+      "unusedCompileDependenciesTestIfRelevant",
+      "testIfRelevant",
+      "mimaReportBinaryIssuesIfRelevant"
+    ).mkString("; ", "; ", "")) ++
     addCommandAlias("releaseLocal", "; reload; project /; +publishLocalIfRelevant") ++
     Seq(
       organizationName := publishFullName.value,
@@ -206,6 +217,8 @@ object SpiewakPlugin extends AutoPlugin {
   override def projectSettings =
     AutomateHeaderPlugin.projectSettings ++
     Seq(
+      undeclaredCompileDependenciesTestIfRelevant := filterTaskWhereRelevant(undeclaredCompileDependenciesTest).value,
+      unusedCompileDependenciesTestIfRelevant := filterTaskWhereRelevant(unusedCompileDependenciesTest).value,
       Test / testIfRelevant := filterTaskWhereRelevant(Test / test).value,
       mimaReportBinaryIssuesIfRelevant := filterTaskWhereRelevant(mimaReportBinaryIssues).value,
       publishIfRelevant := filterTaskWhereRelevant(publish).value,
@@ -495,5 +508,9 @@ object SpiewakPlugin extends AutoPlugin {
           Seq()
         else
           old
-      })
+      },
+
+      unusedCompileDependenciesFilter -=
+        moduleFilter("org.scala-js", "scalajs-library*") |
+        moduleFilter("org.scala-lang", "scala3-library*"))
 }
