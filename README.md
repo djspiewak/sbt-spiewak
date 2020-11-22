@@ -76,6 +76,9 @@ lazy val root = project
   + Ensures bintray package existence
   + Performs sonatype release steps
   + Stages through `bintrayRelease` to allow release atomicity
+* `NowarnCompatPlugin`
+  + Adds support for `@nowarn` to Scala 2.11, 2.12, and 2.13.1 via Silencer.
+  + Adds scala-collection-compat to the classpath for versions that need Silencer. Opt out by configuring `nowarnCompatAnnotationProvider`.
 
 ### Bintray Requirements
 
