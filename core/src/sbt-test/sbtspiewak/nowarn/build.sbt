@@ -1,4 +1,4 @@
-ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12"," 2.13.3", "0.27.0-RC1", "3.0.0-M1")
+ThisBuild / crossScalaVersions := Seq("2.11.12", "2.12.12", "2.13.3", "0.27.0-RC1", "3.0.0-M1")
 
 ThisBuild / baseVersion := "0.1"
 
