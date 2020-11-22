@@ -385,6 +385,18 @@ object SpiewakPlugin extends AutoPlugin {
         }
       },
 
+      javacOptions ++= Seq(
+        "-encoding", "utf8",
+        "-Xlint:all",
+      ),
+
+      javacOptions ++= {
+        if (githubIsWorkflowBuild.value && !isDotty.value && fatalWarningsInCI.value)
+          Seq("-Werror")
+        else
+          Seq.empty
+      },
+
       libraryDependencies ++= {
         scalaVersion.value match {
           case FullScalaVersion(2, 10, build, _, _) if build >= 6 =>
