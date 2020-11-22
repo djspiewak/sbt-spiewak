@@ -64,6 +64,10 @@ lazy val root = project
   + sbt-mima
     * Infers previous versions by using git tags
     * Automatically runs on `ci` and `release`
+  + sbt-explicit-dependencies
+    * `unusedCompileDependenciesTest` runs on `ci`
+    * disabled by `NoPublishPlugin`
+    * filters Scala.js and Dotty standard libraries
 - Sane scalac settings
   + Including `-Ybackend-parallelism` where supported
 - SI-2712 fix across scala versions (dating back to 2.10)

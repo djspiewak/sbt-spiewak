@@ -19,10 +19,11 @@ package sbtspiewak
 import sbt._, Keys._
 
 import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
+import explicitdeps.ExplicitDepsPlugin, ExplicitDepsPlugin.autoImport._
 
 object NoPublishPlugin extends AutoPlugin {
   override def trigger = noTrigger
-  override def requires = MimaPlugin
+  override def requires = MimaPlugin && ExplicitDepsPlugin
 
   override def projectSettings = Seq(
     publish := {},
@@ -30,6 +31,8 @@ object NoPublishPlugin extends AutoPlugin {
     publishArtifact := false,
 
     mimaPreviousArtifacts := Set.empty,
+    undeclaredCompileDependenciesTest := {},
+    unusedCompileDependenciesTest := {},
     skip in publish := true
   )
 }
