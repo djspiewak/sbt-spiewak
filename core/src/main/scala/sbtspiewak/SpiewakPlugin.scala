@@ -388,8 +388,14 @@ object SpiewakPlugin extends AutoPlugin {
       javacOptions ++= Seq(
         "-encoding", "utf8",
         "-Xlint:all",
-        "-Werror"
       ),
+
+      javacOptions ++= {
+        if (githubIsWorkflowBuild.value && !isDotty.value && fatalWarningsInCI.value)
+          Seq("-Werror")
+        else
+          Seq.empty
+      },
 
       libraryDependencies ++= {
         scalaVersion.value match {
