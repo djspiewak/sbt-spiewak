@@ -160,6 +160,14 @@ object SpiewakPlugin extends AutoPlugin {
 
       strictSemVer := true,
 
+      // both of these are enforced by the automatic mima magic
+      versionScheme := {
+        if (strictSemVer.value)
+          Some("early-semver")
+        else
+          Some("pvp")
+      },
+
       startYear := Some(2020),
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
