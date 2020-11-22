@@ -33,19 +33,18 @@ object NowarnCompatPlugin extends AutoPlugin {
   override def requires = ExplicitDepsPlugin
 
   override def globalSettings = Seq(
-    nowarnCompatSilencerVersion := "1.7.0",
+    nowarnCompatSilencerVersion := "1.7.1",
     nowarnCompatAnnotationProvider := Some("org.scala-lang.modules" %% "scala-collection-compat" % "2.3.0"),
   )
 
   override def projectSettings = Seq(
     libraryDependencies ++= {
       scalaVersion.value match {
-        case FullScalaVersion(2, 13, x, _, _) if x >= 2 =>
-          Seq.empty
-        case FullScalaVersion(0, _, _, _, _) => // Old Dotties
-          Seq.empty
-        case FullScalaVersion(3, _, _, _, _) => // New Dotties
-          Seq.empty
+        case FullScalaVersion(3, _, _, _, _) => Seq.empty // New Dotties
+        case FullScalaVersion(0, _, _, _, _) => Seq.empty // Old Dotties
+        case FullScalaVersion(2, 13, x, _, _) if x >= 2 => Seq.empty // Native support
+        case FullScalaVersion(2, 13, x, _, _) =>
+          sys.error(s"NowarnCompatPlugin: Unsupported Scala version: ${scalaVersion.value}. Scala 2.13 must be at least 2.13.2.")
         case _ =>
           Seq(
             compilerPlugin(("com.github.ghik" % "silencer-plugin" % nowarnCompatSilencerVersion.value).cross(CrossVersion.full)),
@@ -54,10 +53,10 @@ object NowarnCompatPlugin extends AutoPlugin {
           ) ++
           (nowarnCompatAnnotationProvider.value match {
             case Some(moduleId) =>
-              sLog.value.info(s"SilencerPlugin: ${scalaVersion.value} doesn't support @nowarn. Adding ${moduleId}.")
+              sLog.value.info(s"SilencerPlugin: Scala ${scalaVersion.value} doesn't support @nowarn. Adding ${moduleId}.")
               Seq(moduleId)
             case None =>
-              sLog.value.warn(s"SilencerPlugin: ${scalaVersion.value} doesn't support @nowarn. Project will need to supply its own scala.annotation.nowarn implementation, or set `nowarnCompatAnnotationProvider`.")
+              sLog.value.warn(s"SilencerPlugin: Scala ${scalaVersion.value} doesn't support @nowarn. Project needs to supply its own @nowarn implementation, or set `nowarnCompatAnnotationProvider`.")
               Seq.empty
           })
       }
