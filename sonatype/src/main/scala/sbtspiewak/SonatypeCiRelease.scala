@@ -24,7 +24,7 @@ object SonatypeCiRelease extends AutoPlugin {
 
   object autoImport {
     lazy val spiewakCiReleaseSnapshots = settingKey[Boolean]("Controls whether or not snapshots should be released on master (default: false)")
-    lazy val spiewakMainBranch = settingKey[String]("The primary branch for your repository (default: master)")
+    lazy val spiewakMainBranches = settingKey[Seq[String]]("The primary branch(es) for your repository (default: [master])")
   }
 
   import autoImport._
@@ -44,7 +44,7 @@ object SonatypeCiRelease extends AutoPlugin {
 
     githubWorkflowPublishTargetBranches := {
       val seed = if (spiewakCiReleaseSnapshots.value)
-        Seq(RefPredicate.Equals(Ref.Branch(spiewakMainBranch.value)))
+        spiewakMainBranches.value.map(b => RefPredicate.Equals(Ref.Branch(b)))
       else
         Seq.empty
 

@@ -73,8 +73,10 @@ ThisBuild / spiewakCiReleaseSnapshots := true
 Also optionally, you can override the name of the primary branch. By default, `SonatypeCiRelease` assumes the primary branch is named `master`. If you have renamed your primary branch, make sure to reconfigure the value:
 
 ```sbt
-ThisBuild / spiewakMainBranch := "main"
+ThisBuild / spiewakMainBranches := Seq("main")
 ```
+
+You can also simply add additional branches, if you're publishing snapshots on more than one at a time.
 
 With all of these steps out of the way, you should have some nice, reliable, CI-driven releases going forward!
 
