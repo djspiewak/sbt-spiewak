@@ -391,8 +391,21 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       scalacOptions ++= {
-        // Dotty doesn't understand -P for the moment (lampepfl/dotty#9783)
-        if (!isDotty.value && crossProjectPlatform.?.value.map(_.identifier == "js").getOrElse(false)) {
+        val flag = Some(scalaVersion.value) collect {
+          case FullScalaVersion(2, _, _, _, _) =>
+            "-P:scalajs:mapSourceURI:"
+
+          case FullScalaVersion(3, 0, _, MRC.Milestone(m), _) if m >= 2 =>
+            "-scalajs-mapSourceURI:"
+
+          case FullScalaVersion(3, 0, _, MRC.ReleaseCandidate(_) | MRC.Final, _) =>
+            "-scalajs-mapSourceURI:"
+
+          case FullScalaVersion(3, m, _, _, _) if m > 0 =>
+            "-scalajs-mapSourceURI:"
+        }
+
+        if (crossProjectPlatform.?.value.map(_.identifier == "js").getOrElse(false)) {
           val hasVersion = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.nonEmpty
           val versionOrHash =
             if (hasVersion)
@@ -404,9 +417,11 @@ object SpiewakPlugin extends AutoPlugin {
 
           val infoOpt = scmInfo.value
           versionOrHash flatMap { v =>
-            infoOpt map { info =>
-              val g = s"${info.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$v/"
-              s"-P:scalajs:mapSourceURI:$l->$g"
+            flag flatMap { f =>
+              infoOpt map { info =>
+                val g = s"${info.browseUrl.toString.replace("github.com", "raw.githubusercontent.com")}/$v/"
+                s"${f}${l}->${g}"
+              }
             }
           }
         } else {
