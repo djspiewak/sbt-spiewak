@@ -32,14 +32,19 @@ object NowarnCompatPlugin extends AutoPlugin {
   override def trigger = noTrigger
   override def requires = ExplicitDepsPlugin
 
-  override def projectSettings = Seq(
+  override def globalSettings = Seq(
     nowarnCompatSilencerVersion := "1.7.0",
     nowarnCompatAnnotationProvider := Some("org.scala-lang.modules" %% "scala-collection-compat" % "2.3.0"),
+  )
+
+  override def projectSettings = Seq(
     libraryDependencies ++= {
       scalaVersion.value match {
         case FullScalaVersion(2, 13, x, _, _) if x >= 2 =>
           Seq.empty
-        case FullScalaVersion(3, _, _, _, _) =>
+        case FullScalaVersion(0, _, _, _, _) => // Old Dotties
+          Seq.empty
+        case FullScalaVersion(3, _, _, _, _) => // New Dotties
           Seq.empty
         case _ =>
           Seq(
