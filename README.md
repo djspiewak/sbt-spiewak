@@ -107,7 +107,8 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
 - Sane scalac settings
   + Including `-Ybackend-parallelism` where supported
 - SI-2712 fix across scala versions (dating back to 2.10)
-- kind-projector
+- kind-projector (Scala 2 only)
+- better-monadic-for (Scala 2 only)
 - `release` and `ci` command aliases
   + Ensures bintray package existence
   + Performs sonatype release steps
