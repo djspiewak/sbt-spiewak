@@ -530,7 +530,7 @@ object SpiewakPlugin extends AutoPlugin {
       // dottydoc really doesn't work at all right now
       Compile / doc / sources := {
         val old = (Compile / doc / sources).value
-        if (isDotty.value)
+        if (isDotty.value && !useScala3doc.value)   // allow opt-in usage!
           Seq()
         else
           old
