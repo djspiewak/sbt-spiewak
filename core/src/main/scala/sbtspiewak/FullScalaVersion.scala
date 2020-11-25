@@ -20,7 +20,8 @@ object FullScalaVersion {
   private val Release = """^(\d+)\.(\d+)\.(\d+)$""".r
   private val Milestone = """^(\d+)\.(\d+)\.(\d+)-M(\d+)$""".r
   private val ReleaseCandidate = """^(\d+)\.(\d+)\.(\d+)-RC(\d+)$""".r
-  private val Snapshot = """^(\d+)\.(\d+)\.(\d+)-M(\d+)(.+)$""".r
+  private val SnapshotMilestone = """^(\d+)\.(\d+)\.(\d+)-M(\d+)(.+)$""".r
+  private val SnapshotRC = """^(\d+)\.(\d+)\.(\d+)-RC(\d+)(.+)$""".r
   private val Nightly = """^(\d+)\.(\d+)\.(\d+)-(bin|pre)(?:(?:-([0-9a-f]{7}))?(-SNAPSHOT)?|-\d{8}-([0-9a-f]{7})-NIGHTLY)$""".r
 
   /**
@@ -36,8 +37,11 @@ object FullScalaVersion {
     case ReleaseCandidate(major, minor, build, rc) =>
       Some((major.toInt, minor.toInt, build.toInt, MRC.ReleaseCandidate(rc.toInt), None))
 
-    case Snapshot(major, minor, build, milestone, qualifier) =>
+    case SnapshotMilestone(major, minor, build, milestone, qualifier) =>
       Some((major.toInt, minor.toInt, build.toInt, MRC.Milestone(milestone.toInt), Some(qualifier)))
+
+    case SnapshotRC(major, minor, build, rc, qualifier) =>
+      Some((major.toInt, minor.toInt, build.toInt, MRC.ReleaseCandidate(rc.toInt), Some(qualifier)))
 
     case Nightly(major, minor, build, binPre, hash, snapshot, null) =>
       Some((major.toInt, minor.toInt, build.toInt, MRC.Nightly(binPre == "bin", Option(hash), snapshot != null), None))
