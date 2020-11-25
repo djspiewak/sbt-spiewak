@@ -88,7 +88,7 @@ object SpiewakPlugin extends AutoPlugin {
       libraryDependencies :=
         libraryDependencies.value map { lib =>
           // hack to avoid slapping dotty compat on the SJS dotty lib
-          if (lib.organization != "ch.epfl.lamp" && lib.name != "dotty_library")
+          if ((lib.organization != "ch.epfl.lamp" || lib.organization != "org.scala-lang") && lib.name != "dotty_library")
             lib.withDottyCompat(scalaVersion.value)
           else
             lib
