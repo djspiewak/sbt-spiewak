@@ -23,7 +23,7 @@ import explicitdeps.ExplicitDepsPlugin, ExplicitDepsPlugin.autoImport._
 
 object NoPublishPlugin extends AutoPlugin {
   override def trigger = noTrigger
-  override def requires = MimaPlugin && ExplicitDepsPlugin
+  override def requires = MimaPlugin && ExplicitDepsPlugin && SpiewakPlugin
 
   override def projectSettings = Seq(
     publish := {},
