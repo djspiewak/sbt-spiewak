@@ -151,7 +151,7 @@ object SpiewakPlugin extends AutoPlugin {
       "project /",
       "headerCheckAll",
       "clean",
-      "unusedCompileDependenciesTestIfRelevant",
+      // "unusedCompileDependenciesTestIfRelevant",
       "testIfRelevant",
       "mimaReportBinaryIssuesIfRelevant"
     ).mkString("; ", "; ", "")) ++
