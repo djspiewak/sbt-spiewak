@@ -18,7 +18,7 @@ package sbtspiewak
 
 import sbt._, Keys._
 
-import sbtghactions.GenerativePlugin, GenerativePlugin.autoImport._
+import sbtghactions.GenerativePlugin.autoImport._
 
 object SonatypeCiRelease extends AutoPlugin {
 
@@ -29,7 +29,7 @@ object SonatypeCiRelease extends AutoPlugin {
 
   import autoImport._
 
-  override def requires = GenerativePlugin
+  override def requires = SpiewakPlugin
 
   override def trigger = noTrigger
 
