@@ -330,7 +330,7 @@ object SpiewakPlugin extends AutoPlugin {
 
       scalacOptions ++= {
         val numCPUs = java.lang.Runtime.getRuntime.availableProcessors()
-        val settings = Seq(s"-Ybackend-parallelism", numCPUs.toString)
+        val settings = Seq(s"-Ybackend-parallelism", scala.math.min(16, numCPUs).toString)
 
         scalaVersion.value match {
           case FullScalaVersion(2, 12, build, _, _) if build >= 5 =>
