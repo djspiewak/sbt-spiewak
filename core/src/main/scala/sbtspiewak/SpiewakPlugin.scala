@@ -30,7 +30,7 @@ import explicitdeps.ExplicitDepsPlugin.autoImport._
 
 import _root_.io.crashbox.gpg.SbtGpg
 
-import sbtcrossproject.{CrossPlugin, CrossType}, CrossPlugin.autoImport.crossProjectPlatform
+import sbtcrossproject.CrossPlugin, CrossPlugin.autoImport.crossProjectPlatform
 
 import sbtghactions.{GenerativeKeys, GenerativePlugin, GitHubActionsKeys, GitHubActionsPlugin, WorkflowStep}, GenerativeKeys._, GitHubActionsKeys._
 
@@ -514,18 +514,6 @@ object SpiewakPlugin extends AutoPlugin {
           }
         val stripTestScope = stripIf(n => n.label == "dependency" && (n \ "scope").text == "test")
         new RuleTransformer(stripTestScope).transform(node)(0)
-      },
-
-      Compile / unmanagedSourceDirectories ++= {
-        val major = if (isDotty.value) "-3" else "-2"
-        List(CrossType.Pure, CrossType.Full).flatMap(
-          _.sharedSrcDir(baseDirectory.value, "main").toList.map(f => file(f.getPath + major)))
-      },
-
-      Test / unmanagedSourceDirectories ++= {
-        val major = if (isDotty.value) "-3" else "-2"
-        List(CrossType.Pure, CrossType.Full).flatMap(
-          _.sharedSrcDir(baseDirectory.value, "test").toList.map(f => file(f.getPath + major)))
       },
 
       // dottydoc really doesn't work at all right now
