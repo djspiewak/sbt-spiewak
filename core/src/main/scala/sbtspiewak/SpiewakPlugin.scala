@@ -377,19 +377,23 @@ object SpiewakPlugin extends AutoPlugin {
       Test / console / scalacOptions := (scalacOptions in (Compile, console)).value,
 
       Compile / doc / scalacOptions ++= {
-        val isSnapshot = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.isEmpty
+        if (isDotty.value)
+          Seq("-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+        else {
+          val isSnapshot = git.gitCurrentTags.value.map(git.gitTagToVersionNumber.value).flatten.isEmpty
 
-        val versionOrHash =
-          if (!isSnapshot)
-            Some(s"v${version.value}")
-          else
-            git.gitHeadCommit.value
+          val versionOrHash =
+            if (!isSnapshot)
+              Some(s"v${version.value}")
+            else
+              git.gitHeadCommit.value
 
-        val infoOpt = scmInfo.value
-        versionOrHash.toSeq flatMap { vh =>
-          infoOpt.toSeq flatMap { info =>
-            val path = s"${info.browseUrl}/blob/$vh€{FILE_PATH}.scala"
-            Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+          val infoOpt = scmInfo.value
+          versionOrHash.toSeq flatMap { vh =>
+            infoOpt.toSeq flatMap { info =>
+              val path = s"${info.browseUrl}/blob/$vh€{FILE_PATH}.scala"
+               Seq("-doc-source-url", path, "-sourcepath", (LocalRootProject / baseDirectory).value.getAbsolutePath)
+            }
           }
         }
       },
