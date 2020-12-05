@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Daniel Spiewak
+ * Copyright 2018-2020 Daniel Spiewak
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.typesafe.sbt.GitPlugin
 import com.typesafe.sbt.SbtGit.git
 import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
 
-import de.heikoseeberger.sbtheader.AutomateHeaderPlugin
+import de.heikoseeberger.sbtheader.{AutomateHeaderPlugin, HeaderPlugin, License, SpdxLicense}, HeaderPlugin.autoImport._
 
 import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
 
@@ -74,6 +74,8 @@ object SpiewakPlugin extends AutoPlugin {
 
     lazy val publishIfRelevant = taskKey[Unit]("A wrapper around the `publish` task which checks to ensure the current scalaVersion is in crossScalaVersions")
     lazy val publishLocalIfRelevant = taskKey[Unit]("A wrapper around the `publishLocal` task which checks to ensure the current scalaVersion is in crossScalaVersions")
+
+    lazy val endYear = settingKey[Option[Int]]("A dual to startYear: the year in which the project ended (usually current year). If this is set, then licenses will be encoded as a range from startYear to endYear. Otherwise, only startYear will apply. (default: None)")
 
     @deprecated("Use .enablePlugin(NoPublishPlugin)", "0.18.0")
     val noPublishSettings = Seq(
@@ -139,7 +141,13 @@ object SpiewakPlugin extends AutoPlugin {
   private val DeprecatedReleaseTag = """^v((?:\d+\.)?\d+)$""".r
   private val Description = """^.*-(\d+)-[a-zA-Z0-9]+$""".r
 
+  private val spdxMapping =
+    License.asInstanceOf[{ val spdxLicenses: Vector[SpdxLicense] }].spdxLicenses.foldLeft(Map[String, SpdxLicense]()) { (acc, lic) =>
+      acc + (lic.spdxIdentifier -> lic)
+    }
+
   override def globalSettings = Seq(
+    endYear := None,
     fatalWarningsInCI := true,
     versionIntroduced := Map(),
     crossScalaVersions := Seq("2.13.2"),
@@ -226,6 +234,34 @@ object SpiewakPlugin extends AutoPlugin {
   override def projectSettings =
     AutomateHeaderPlugin.projectSettings ++
     Seq(
+      headerLicense := {
+        val range = (startYear.value, endYear.value) match {
+          case (Some(start), Some(end)) =>
+            Some(s"$start-$end")
+
+          case (None, Some(year)) =>
+            Some(year.toString)
+
+          case (Some(year), None) =>
+            Some(year.toString)
+
+          case (None, None) =>
+            None
+        }
+
+        // the following was copied from sbt-header
+        val licenseName = licenses.value match {
+          case (name, _) :: Nil => Some(name)
+          case _ => None
+        }
+
+        for {
+          name <- licenseName
+          license <- spdxMapping.get(name)
+          year <- range
+        } yield license(year, organizationName.value, headerLicenseStyle.value)
+      },
+
       undeclaredCompileDependenciesTestIfRelevant := filterTaskWhereRelevant(undeclaredCompileDependenciesTest).value,
       unusedCompileDependenciesTestIfRelevant := filterTaskWhereRelevant(unusedCompileDependenciesTest).value,
       Test / testIfRelevant := filterTaskWhereRelevant(Test / test).value,

@@ -37,6 +37,9 @@ ThisBuild / githubWorkflowBuildPreamble +=
       "git config --global user.name 'GitHub Actions'"),
     name = Some("Configure git"))
 
+ThisBuild / startYear := Some(2018)
+ThisBuild / endYear := Some(2020)
+
 lazy val root = project
   .aggregate(core, bintray, sonatype)
   .in(file("."))
