@@ -30,7 +30,7 @@ object SpiewakSonatypePlugin extends AutoPlugin {
     addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssuesIfRelevant; +publishIfRelevant; sonatypeBundleRelease")
 
   override def projectSettings = Seq(
-    publishMavenStyle := !sbtPlugin.value,
+    publishMavenStyle := true,    // we want to do this unconditionally, even if publishing a plugin
     sonatypeProfileName := organization.value,
     publishTo := sonatypePublishToBundle.value)
 }
