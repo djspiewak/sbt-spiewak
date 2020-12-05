@@ -20,7 +20,7 @@ import sbt._, Keys._
 
 import sbtghactions.GenerativePlugin.autoImport._
 
-object SonatypeCiRelease extends AutoPlugin {
+object SonatypeCiReleasePlugin extends AutoPlugin {
 
   object autoImport {
     lazy val spiewakCiReleaseSnapshots = settingKey[Boolean]("Controls whether or not snapshots should be released on master (default: false)")

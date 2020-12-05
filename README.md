@@ -48,12 +48,12 @@ lazy val root = project
 
 ## CI Release
 
-If you would like your releases to be published by your CI process, rather than locally, you will probably benefit from the `SonatypeCiRelease` plugin (part of sbt-spiewak-sonatype). This makes some assumptions about your secrets and general build configuration, applies the settings to the sbt-github-actions-generated workflow, and generally takes care of everything for you.
+If you would like your releases to be published by your CI process, rather than locally, you will probably benefit from the `SonatypeCiReleasePlugin` plugin (part of sbt-spiewak-sonatype). This makes some assumptions about your secrets and general build configuration, applies the settings to the sbt-github-actions-generated workflow, and generally takes care of everything for you.
 
 To use, add the following to the root level of your build.sbt:
 
 ```sbt
-enablePlugins(SonatypeCiRelease)
+enablePlugins(SonatypeCiReleasePlugin)
 ```
 
 Then, configure the following encrypted secrets within GitHub Actions:
@@ -70,7 +70,7 @@ Once this is done, decide whether you would like snapshots to be published on ev
 ThisBuild / spiewakCiReleaseSnapshots := true
 ```
 
-Also optionally, you can override the name of the primary branch. By default, `SonatypeCiRelease` assumes the primary branch is named `master`. If you have renamed your primary branch, make sure to reconfigure the value:
+Also optionally, you can override the name of the primary branch. By default, `SonatypeCiReleasePlugin` assumes the primary branch is named `master`. If you have renamed your primary branch, make sure to reconfigure the value:
 
 ```sbt
 ThisBuild / spiewakMainBranches := Seq("main")
@@ -113,9 +113,11 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
   + Ensures bintray package existence
   + Performs sonatype release steps
   + Stages through `bintrayRelease` to allow release atomicity
-* `NowarnCompatPlugin`
+- `NowarnCompatPlugin`
   + Adds support for `@nowarn` to Scala 2.11, 2.12, and 2.13.1 via Silencer.
   + Adds scala-collection-compat to the classpath for versions that need Silencer. Opt out by configuring `nowarnCompatAnnotationProvider`.
+- `SonatypeCiReleasePlugin`
+  + Prescriptive defaults for projects which want CI releases
 
 ### Bintray Requirements
 
@@ -144,6 +146,7 @@ You may consider overriding any of the following keys, which are hard-coded to d
 
 - `licenses` (defaults to Apache 2.0)
 - `developers` (defaults to just yourself, using the `publishFullName` and `publishGithubUser`)
-- `startYear` (defaults to 2018)
+- `startYear` (defaults to 2020)
+- `endYear` (defaults to empty; set this if you want a *range* of years for your copyright headers)
 - `strictSemVer` (defaults to `true`)
   + When set to `true`, it disallows breaking binary compatibility in any release which does not increment the *major* component unless the major component is `0` (i.e. semantic versioning). Many Scala projects break binary compatibility in *minor* releases, such as Scala itself. This scheme is sometimes referred to as "scala ver". Setting `ThisBuild / strictSemVer := false` will relax the MiMa compatibility checks and allow you to perform such breakage if desired.
