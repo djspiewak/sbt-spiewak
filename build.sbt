@@ -26,7 +26,7 @@ Global / baseVersion := "0.19"
 Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.4.3"
+Global / sbtVersion := "1.4.4"
 
 ThisBuild / crossScalaVersions := Seq("2.12.12")
 
