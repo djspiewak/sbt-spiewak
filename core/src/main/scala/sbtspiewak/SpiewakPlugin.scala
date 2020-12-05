@@ -239,7 +239,7 @@ object SpiewakPlugin extends AutoPlugin {
         else
           Seq(
             compilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-            compilerPlugin("org.typelevel" % "kind-projector" % "0.11.1" cross CrossVersion.full),
+            compilerPlugin("org.typelevel" % "kind-projector" % "0.11.2" cross CrossVersion.full),
           )
       },
 
