@@ -501,7 +501,7 @@ object SpiewakPlugin extends AutoPlugin {
       mimaPreviousArtifacts := {
         val current = version.value
         val org = organization.value
-        val n = name.value
+        val n = moduleName.value
 
         val TagBase = """^(\d+)\.(\d+).*"""r
         val TagBase(major, minor) = baseVersion.value
