@@ -6,4 +6,7 @@ target/
 # Ignore [ce]tags files
 tags
 
-/.bsp
+/.bsp/
+/.bloop/
+/.metals/
+project/metals.sbt
