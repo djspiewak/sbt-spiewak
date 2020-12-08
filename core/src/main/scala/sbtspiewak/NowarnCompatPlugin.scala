@@ -53,10 +53,10 @@ object NowarnCompatPlugin extends AutoPlugin {
           ) ++
           (nowarnCompatAnnotationProvider.value match {
             case Some(moduleId) =>
-              sLog.value.info(s"SilencerPlugin: Scala ${scalaVersion.value} doesn't support @nowarn. Adding ${moduleId}.")
+              sLog.value.info(s"NowarnCompatPlugin: Scala ${scalaVersion.value} doesn't support @nowarn. Adding ${moduleId}.")
               Seq(moduleId)
             case None =>
-              sLog.value.warn(s"SilencerPlugin: Scala ${scalaVersion.value} doesn't support @nowarn. Project needs to supply its own @nowarn implementation, or set `nowarnCompatAnnotationProvider`.")
+              sLog.value.warn(s"NowarnCompatPlugin: Scala ${scalaVersion.value} doesn't support @nowarn. Project needs to supply its own @nowarn implementation, or set `nowarnCompatAnnotationProvider`.")
               Seq.empty
           })
       }
