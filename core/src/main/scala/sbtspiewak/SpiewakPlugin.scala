@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Daniel Spiewak
+ * Copyright 2018-2021 Daniel Spiewak
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,7 +177,7 @@ object SpiewakPlugin extends AutoPlugin {
           Some("pvp")
       },
 
-      startYear := Some(2020),
+      startYear := Some(2021),
 
       licenses += (("Apache-2.0", url("http://www.apache.org/licenses/"))),
 

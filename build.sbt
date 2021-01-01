@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Daniel Spiewak
+ * Copyright 2018-2021 Daniel Spiewak
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ ThisBuild / githubWorkflowBuildPreamble +=
     name = Some("Configure git"))
 
 ThisBuild / startYear := Some(2018)
-ThisBuild / endYear := Some(2020)
+ThisBuild / endYear := Some(2021)
 
 lazy val root = project
   .aggregate(core, bintray, sonatype)
