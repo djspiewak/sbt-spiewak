@@ -529,11 +529,11 @@ object SpiewakPlugin extends AutoPlugin {
           val reduced = versionIntroduced.value.get(CrossVersion.binaryScalaVersion(scalaVersion.value)) match {
             case Some(FullVersion(boundMaj, boundMin, boundRev)) =>
               // we assume you don't want more than 1000 versions per component
-              val boundOrd = boundMaj.toInt * 1000 * 1000 + boundMin.toInt * 1000 + boundRev.toInt * 1000
+              val boundOrd = boundMaj.toInt * 1000 * 1000 + boundMin.toInt * 1000 + boundRev.toInt
 
               notCurrent filter {
                 case FullVersion(maj, min, rev) =>
-                  (maj.toInt * 1000 * 1000 + min.toInt * 1000 + rev.toInt * 1000) >= boundOrd
+                  (maj.toInt * 1000 * 1000 + min.toInt * 1000 + rev.toInt) >= boundOrd
               }
 
             case None =>
