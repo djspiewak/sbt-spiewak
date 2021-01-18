@@ -1,4 +1,4 @@
-# sbt-spiewak [![Build Status](https://travis-ci.org/djspiewak/sbt-spiewak.svg?branch=master)](https://travis-ci.org/djspiewak/sbt-spiewak) [![Download](https://api.bintray.com/packages/djspiewak/sbt-plugins/sbt-spiewak/images/download.svg)](https://bintray.com/djspiewak/sbt-plugins/sbt-spiewak/_latestVersion)
+# sbt-spiewak [![Download](https://api.bintray.com/packages/djspiewak/sbt-plugins/sbt-spiewak/images/download.svg)](https://bintray.com/djspiewak/sbt-plugins/sbt-spiewak/_latestVersion)
 
 This plugin basically just exists to allow me to more conveniently setup my baseline SBT configuration, which has evolved somewhat over the years, and is also becoming quite unwieldy when solely represented in [giter8 format](https://github.com/djspiewak/base.g8). If you want to use this plugin with a *new* project, you should probably start from that template.
 
