@@ -23,8 +23,8 @@ import sbtghactions.GenerativePlugin.autoImport._
 object SonatypeCiReleasePlugin extends AutoPlugin {
 
   object autoImport {
-    lazy val spiewakCiReleaseSnapshots = settingKey[Boolean]("Controls whether or not snapshots should be released on master (default: false)")
-    lazy val spiewakMainBranches = settingKey[Seq[String]]("The primary branch(es) for your repository (default: [master])")
+    lazy val spiewakCiReleaseSnapshots = settingKey[Boolean]("Controls whether or not snapshots should be released on main (default: false)")
+    lazy val spiewakMainBranches = settingKey[Seq[String]]("The primary branch(es) for your repository (default: [])")
   }
 
   import autoImport._
@@ -34,7 +34,8 @@ object SonatypeCiReleasePlugin extends AutoPlugin {
   override def trigger = noTrigger
 
   override def globalSettings = Seq(
-    spiewakCiReleaseSnapshots := false)
+    spiewakCiReleaseSnapshots := false,
+    spiewakMainBranches := Seq())
 
   override def buildSettings = Seq(
     githubWorkflowEnv ++= Map(

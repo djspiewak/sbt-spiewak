@@ -70,7 +70,7 @@ Once this is done, decide whether you would like snapshots to be published on ev
 ThisBuild / spiewakCiReleaseSnapshots := true
 ```
 
-Also optionally, you can override the name of the primary branch. By default, `SonatypeCiReleasePlugin` assumes the primary branch is named `master`. If you have renamed your primary branch, make sure to reconfigure the value:
+If you do set the above to `true`, you should probably also make sure to set your primary branch as below:
 
 ```sbt
 ThisBuild / spiewakMainBranches := Seq("main")
