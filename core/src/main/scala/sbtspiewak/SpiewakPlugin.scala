@@ -229,7 +229,7 @@ object SpiewakPlugin extends AutoPlugin {
       git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true),
 
       git.gitHeadCommit := Try("git rev-parse HEAD".!!.trim).toOption,
-      git.gitCurrentTags := Try("git tag --contains HEAD".!!.trim.split("\\s+").toList).toOption.toList.flatten)
+      git.gitCurrentTags := Try("git tag --contains HEAD".!!.trim.split("\\s+").toList.filter(_ != "")).toOption.toList.flatten)
 
   override def projectSettings =
     AutomateHeaderPlugin.projectSettings ++
