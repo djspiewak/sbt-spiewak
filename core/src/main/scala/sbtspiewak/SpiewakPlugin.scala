@@ -499,48 +499,52 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       mimaPreviousArtifacts := {
-        val current = version.value
-        val org = organization.value
-        val n = moduleName.value
+        if (!isDotty.value) {
+          val current = version.value
+          val org = organization.value
+          val n = moduleName.value
 
-        val TagBase = """^(\d+)\.(\d+).*"""r
-        val TagBase(major, minor) = baseVersion.value
+          val TagBase = """^(\d+)\.(\d+).*"""r
+          val TagBase(major, minor) = baseVersion.value
 
-        val isPre = major.toInt == 0
+          val isPre = major.toInt == 0
 
-        if (sbtPlugin.value || !crossProjectPlatform.?.value.map(_.identifier == "jvm").getOrElse(true)) {
-          Set.empty
+          if (sbtPlugin.value || !crossProjectPlatform.?.value.map(_.identifier == "jvm").getOrElse(true)) {
+            Set.empty
+          } else {
+            val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
+
+            // in semver, we allow breakage in minor releases if major is 0, otherwise not
+            val Pattern = if (isPre || !strictSemVer.value)
+              s"^v($major\\.$minor\\.\\d+)$$".r
+            else
+              s"^v($major\\.\\d+\\.\\d+)$$".r
+
+            val versions = tags collect {
+              case Pattern(version) => version
+            }
+
+            val notCurrent = versions.filterNot(current ==)
+
+            val FullVersion = """^(\d+)\.(\d+)\.(\d+)$""".r
+            val reduced = versionIntroduced.value.get(CrossVersion.binaryScalaVersion(scalaVersion.value)) match {
+              case Some(FullVersion(boundMaj, boundMin, boundRev)) =>
+                // we assume you don't want more than 1000 versions per component
+                val boundOrd = boundMaj.toInt * 1000 * 1000 + boundMin.toInt * 1000 + boundRev.toInt
+
+                notCurrent filter {
+                  case FullVersion(maj, min, rev) =>
+                    (maj.toInt * 1000 * 1000 + min.toInt * 1000 + rev.toInt) >= boundOrd
+                }
+
+              case None =>
+                notCurrent
+            }
+
+            reduced.map(v => org % s"${n}_${CrossVersion.binaryScalaVersion(scalaVersion.value)}" % v).toSet
+          }
         } else {
-          val tags = Try("git tag --list".!!.split("\n").map(_.trim)).getOrElse(new Array[String](0))
-
-          // in semver, we allow breakage in minor releases if major is 0, otherwise not
-          val Pattern = if (isPre || !strictSemVer.value)
-            s"^v($major\\.$minor\\.\\d+)$$".r
-          else
-            s"^v($major\\.\\d+\\.\\d+)$$".r
-
-          val versions = tags collect {
-            case Pattern(version) => version
-          }
-
-          val notCurrent = versions.filterNot(current ==)
-
-          val FullVersion = """^(\d+)\.(\d+)\.(\d+)$""".r
-          val reduced = versionIntroduced.value.get(CrossVersion.binaryScalaVersion(scalaVersion.value)) match {
-            case Some(FullVersion(boundMaj, boundMin, boundRev)) =>
-              // we assume you don't want more than 1000 versions per component
-              val boundOrd = boundMaj.toInt * 1000 * 1000 + boundMin.toInt * 1000 + boundRev.toInt
-
-              notCurrent filter {
-                case FullVersion(maj, min, rev) =>
-                  (maj.toInt * 1000 * 1000 + min.toInt * 1000 + rev.toInt) >= boundOrd
-              }
-
-            case None =>
-              notCurrent
-          }
-
-          reduced.map(v => org % s"${n}_${CrossVersion.binaryScalaVersion(scalaVersion.value)}" % v).toSet
+          Set.empty   // mima doesn't support Scala 3 yet
         }
       },
 
