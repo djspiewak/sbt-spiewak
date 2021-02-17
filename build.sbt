@@ -20,6 +20,7 @@ Global / organization := "com.codecommit"
 
 Global / publishGithubUser := "djspiewak"
 Global / publishFullName := "Daniel Spiewak"
+Global / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 
 Global / baseVersion := "0.20"
 
