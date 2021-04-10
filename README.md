@@ -46,9 +46,9 @@ lazy val root = project
   .enablePlugins(NoPublishPlugin)
 ```
 
-## CI Release
+## Release automatically with GitHub Actions CI
 
-If you would like your releases to be published by your CI process, rather than locally, you will probably benefit from the `SonatypeCiReleasePlugin` plugin (part of sbt-spiewak-sonatype). This makes some assumptions about your secrets and general build configuration, applies the settings to the sbt-github-actions-generated workflow, and generally takes care of everything for you.
+If you would like your releases to be published by your CI process in GitHub Actions, rather than locally, you will probably benefit from the `SonatypeCiReleasePlugin` plugin (part of sbt-spiewak-sonatype). This makes some assumptions about your secrets and general build configuration, applies the settings to the [sbt-github-actions](https://github.com/djspiewak/sbt-github-actions)-generated workflow, and generally takes care of everything for you.
 
 To use, add the following to the root level of your build.sbt:
 
@@ -56,7 +56,9 @@ To use, add the following to the root level of your build.sbt:
 enablePlugins(SonatypeCiReleasePlugin)
 ```
 
-Then, configure the following encrypted secrets within GitHub Actions:
+Then, generate the initial GitHub Actions in `.github/workflows` with the `githubWorkflowGenerate` SBT task (see [tasks for sbt-github-actions](https://github.com/djspiewak/sbt-github-actions#tasks)).
+
+After that, configure the following encrypted secrets within GitHub Actions (go to _Settings_ -> _Secrets_ -> _New secret_; see [GitHub Encrypted Secrets documentation](https://docs.github.com/en/actions/reference/encrypted-secrets) for more detail):
 
 - `SONATYPE_USERNAME`
 - `SONATYPE_PASSWORD`
