@@ -20,5 +20,4 @@ val setting = {
 
 lazy val root = project.in(file(".")).aggregate(core.js, core.jvm).settings(setting)
 lazy val core = crossProject(JSPlatform, JVMPlatform).in(file("core"))
-  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(setting)

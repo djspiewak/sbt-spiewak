@@ -33,6 +33,6 @@ object NoPublishPlugin extends AutoPlugin {
     mimaPreviousArtifacts := Set.empty,
     undeclaredCompileDependenciesTest := {},
     unusedCompileDependenciesTest := {},
-    skip in publish := true
+    publish / skip := true
   )
 }
