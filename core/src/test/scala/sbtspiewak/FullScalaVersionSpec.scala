@@ -35,13 +35,6 @@ class FullScalaVersionSpec extends Specification {
       }
     }
 
-    "handle dotty 0.27.0-RC1" in {
-      val input = "0.27.0-RC1"
-      input must beLike {
-        case FullScalaVersion(0, 27, 0, MRC.ReleaseCandidate(1), None) => ok
-      }
-    }
-
     "handle scala 3 rc snapshots" in {
       val input = "3.0.0-RC1-bin-SNAPSHOT"
       input must beLike {
