@@ -1,4 +1,4 @@
-addSbtPlugin("com.codecommit"     % "sbt-github-actions"        % "0.10.1")
+addSbtPlugin("com.codecommit"     % "sbt-github-actions"        % "0.11-e6116b4")
 addSbtPlugin("com.github.cb372"   % "sbt-explicit-dependencies" % "0.2.16")
 addSbtPlugin("com.typesafe.sbt"   % "sbt-git"                   % "1.0.0")
 addSbtPlugin("de.heikoseeberger"  % "sbt-header"                % "5.6.0")
