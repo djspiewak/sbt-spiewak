@@ -1,1 +1,0 @@
-../bintray/build.sbt

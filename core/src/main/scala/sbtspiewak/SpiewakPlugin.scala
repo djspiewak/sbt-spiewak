@@ -24,8 +24,6 @@ import com.typesafe.tools.mima.plugin.MimaPlugin, MimaPlugin.autoImport._
 
 import de.heikoseeberger.sbtheader.{AutomateHeaderPlugin, HeaderPlugin, License, SpdxLicense}, HeaderPlugin.autoImport._
 
-import dotty.tools.sbtplugin.DottyPlugin, DottyPlugin.autoImport._
-
 import explicitdeps.ExplicitDepsPlugin.autoImport._
 
 import _root_.io.crashbox.gpg.SbtGpg
@@ -45,7 +43,6 @@ object SpiewakPlugin extends AutoPlugin {
     GitHubActionsPlugin &&
     GenerativePlugin &&
     MimaPlugin &&
-    DottyPlugin &&
     CrossPlugin &&
     plugins.JvmPlugin
 
@@ -76,6 +73,7 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val publishLocalIfRelevant = taskKey[Unit]("A wrapper around the `publishLocal` task which checks to ensure the current scalaVersion is in crossScalaVersions")
 
     lazy val endYear = settingKey[Option[Int]]("A dual to startYear: the year in which the project ended (usually current year). If this is set, then licenses will be encoded as a range from startYear to endYear. Otherwise, only startYear will apply. (default: None)")
+    lazy val isDotty = settingKey[Boolean]("True if building with Scala 3")
 
     @deprecated("Use .enablePlugin(NoPublishPlugin)", "0.18.0")
     val noPublishSettings = Seq(
@@ -85,36 +83,6 @@ object SpiewakPlugin extends AutoPlugin {
 
       mimaPreviousArtifacts := Set.empty,
       skip in publish := true)
-
-    val dottyLibrarySettings = Seq(
-      libraryDependencies :=
-        libraryDependencies.value map { lib =>
-          // hack to avoid slapping dotty compat on the SJS dotty lib
-          if (!(lib.organization == "ch.epfl.lamp" && lib.name == "dotty_library") &&
-              !(lib.organization == "org.scala-lang" && lib.name.startsWith("scala3-library")))
-            lib.withDottyCompat(scalaVersion.value)
-          else
-            lib
-        })
-
-    /**
-     * Only required if you have Dotty versions prior to 0.27.0-RC1 in your
-     * crossScalaVersions. This shim will eventually be removed.
-     */
-    def dottyJsSettings(defaultCrossScalaVersions: SettingKey[Seq[String]]) = Seq(
-      crossScalaVersions := {
-        val default = defaultCrossScalaVersions.value
-
-        if (crossProjectPlatform.value.identifier != "jvm") {
-          default collect {
-            case v @ FullScalaVersion(2, _, _, _, _) => v
-            case v @ FullScalaVersion(3, _, _, _, _) => v
-            case v @ FullScalaVersion(0, min, _, _, _) if min >= 27 => v
-          }
-        } else {
-          default
-        }
-      })
 
     def filterTaskWhereRelevant(delegate: TaskKey[Unit]) =
       Def.taskDyn {
@@ -151,7 +119,8 @@ object SpiewakPlugin extends AutoPlugin {
     fatalWarningsInCI := true,
     versionIntroduced := Map(),
     crossScalaVersions := Seq("2.13.2"),
-    Def.derive(scalaVersion := crossScalaVersions.value.last, default = true))
+    Def.derive(scalaVersion := crossScalaVersions.value.last, default = true),
+    Def.derive(isDotty := scalaVersion.value.startsWith("3.")))
 
   override def buildSettings =
     GitPlugin.autoImport.versionWithGit ++
@@ -275,7 +244,7 @@ object SpiewakPlugin extends AutoPlugin {
         else
           Seq(
             compilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-            compilerPlugin("org.typelevel" % "kind-projector" % "0.11.3" cross CrossVersion.full),
+            compilerPlugin("org.typelevel" % "kind-projector" % "0.13.0" cross CrossVersion.full),
           )
       },
 
@@ -410,7 +379,7 @@ object SpiewakPlugin extends AutoPlugin {
         "-Wunused:patvars",
         "-Wunused:privates"),
 
-      Test / console / scalacOptions := (scalacOptions in (Compile, console)).value,
+      Test / console / scalacOptions := (Compile / console / scalacOptions).value,
 
       Compile / doc / scalacOptions ++= {
         if (isDotty.value)
@@ -558,15 +527,6 @@ object SpiewakPlugin extends AutoPlugin {
           }
         val stripTestScope = stripIf(n => n.label == "dependency" && (n \ "scope").text == "test")
         new RuleTransformer(stripTestScope).transform(node)(0)
-      },
-
-      // dottydoc really doesn't work at all right now
-      Compile / doc / sources := {
-        val old = (Compile / doc / sources).value
-        if (isDotty.value && !useScala3doc.value)   // allow opt-in usage!
-          Seq()
-        else
-          old
       },
 
       unusedCompileDependenciesFilter -=

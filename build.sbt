@@ -22,9 +22,7 @@ Global / publishGithubUser := "djspiewak"
 Global / publishFullName := "Daniel Spiewak"
 Global / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 
-Global / baseVersion := "0.20"
-
-Global / bintrayVcsUrl := Some("git@github.com:djspiewak/sbt-spiewak.git")
+Global / baseVersion := "0.21"
 
 Global / sbtPlugin := true
 Global / sbtVersion := "1.4.4"
@@ -42,7 +40,7 @@ ThisBuild / startYear := Some(2018)
 ThisBuild / endYear := Some(2021)
 
 lazy val root = project
-  .aggregate(core, bintray, sonatype)
+  .aggregate(core, sonatype)
   .in(file("."))
   .settings(name := "root")
   .enablePlugins(NoPublishPlugin)
@@ -56,11 +54,6 @@ lazy val core = project
     scriptedLaunchOpts ++= Seq("-Dplugin.version=" + version.value),
     scriptedBufferLog := true)
   .enablePlugins(SbtPlugin)
-
-lazy val bintray = project
-  .in(file("bintray"))
-  .dependsOn(core)
-  .settings(name := "sbt-spiewak-bintray")
 
 lazy val sonatype = project
   .in(file("sonatype"))
