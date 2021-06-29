@@ -1,4 +1,4 @@
-ThisBuild / crossScalaVersions := Seq("2.12.11", "2.13.2")
+ThisBuild / crossScalaVersions := Seq("2.12.14", "2.13.6")
 
 ThisBuild / baseVersion := "0.1"
 
@@ -8,7 +8,7 @@ ThisBuild / publishFullName := "Daniel Spiewak"
 lazy val check = taskKey[Unit]("check the things")
 
 check := {
-  if (scalaVersion.value != "2.13.2") {
-    sys.error(s"expected '2.13.2' got '${scalaVersion.value}'")
+  if (scalaVersion.value != "2.13.6") {
+    sys.error(s"expected '2.13.6' got '${scalaVersion.value}'")
   }
 }

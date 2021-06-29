@@ -1,4 +1,4 @@
-ThisBuild / crossScalaVersions := Seq("2.12.11", "2.13.2")
+ThisBuild / crossScalaVersions := Seq("2.12.14", "2.13.6")
 
 ThisBuild / baseVersion := "0.2"
 
@@ -36,7 +36,7 @@ setupEarly := {
 checkSemVerEarly := {
   val prev = mimaPreviousArtifacts.value
 
-  val expectedVersions = if (scalaVersion.value == "2.12.11")
+  val expectedVersions = if (scalaVersion.value == "2.12.14")
     Set("0.2.0", "0.2.1", "0.2.2")
   else
     Set("0.2.1", "0.2.2")
@@ -52,7 +52,7 @@ checkSemVerEarly := {
 checkScalaVerEarly := {
   val prev = mimaPreviousArtifacts.value
 
-  val expectedVersions = if (scalaVersion.value == "2.12.11")
+  val expectedVersions = if (scalaVersion.value == "2.12.14")
     Set("0.2.0", "0.2.1", "0.2.2")
   else
     Set("0.2.1", "0.2.2")
