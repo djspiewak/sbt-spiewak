@@ -1,4 +1,4 @@
-ThisBuild / crossScalaVersions := Seq("2.12.11", "2.13.2")
+ThisBuild / crossScalaVersions := Seq("2.12.14", "2.13.6")
 
 ThisBuild / baseVersion := "0.1"
 
@@ -10,12 +10,12 @@ lazy val root = project.in(file(".")).aggregate(`with`, without)
 lazy val `with` = project.in(file("with"))
 lazy val without = project.in(file("without"))
   .settings(
-    crossScalaVersions := Seq("2.13.2"),
+    crossScalaVersions := Seq("2.13.6"),
 
     Compile / compile := {
       val old = (Compile / compile).value
 
-      if (scalaVersion.value != "2.13.2")
+      if (scalaVersion.value != "2.13.6")
         sys.error("wrong!")
       else
         old

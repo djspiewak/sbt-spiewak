@@ -33,8 +33,8 @@ object NowarnCompatPlugin extends AutoPlugin {
   override def requires = ExplicitDepsPlugin
 
   override def globalSettings = Seq(
-    nowarnCompatSilencerVersion := "1.7.1",
-    nowarnCompatAnnotationProvider := Some("org.scala-lang.modules" %% "scala-collection-compat" % "2.3.0"),
+    nowarnCompatSilencerVersion := "1.7.5",
+    nowarnCompatAnnotationProvider := Some("org.scala-lang.modules" %% "scala-collection-compat" % "2.4.4"),
   )
 
   override def projectSettings = Seq(
@@ -43,6 +43,7 @@ object NowarnCompatPlugin extends AutoPlugin {
         case FullScalaVersion(3, _, _, _, _) => Seq.empty // New Dotties
         case FullScalaVersion(0, _, _, _, _) => Seq.empty // Old Dotties
         case FullScalaVersion(2, 13, x, _, _) if x >= 2 => Seq.empty // Native support
+        case FullScalaVersion(2, 12, x, _, _) if x >= 13 => Seq.empty // Native support
         case FullScalaVersion(2, 13, x, _, _) =>
           sys.error(s"NowarnCompatPlugin: Unsupported Scala version: ${scalaVersion.value}. Scala 2.13 must be at least 2.13.2.")
         case _ =>

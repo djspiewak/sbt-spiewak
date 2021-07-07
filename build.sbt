@@ -25,9 +25,9 @@ Global / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 Global / baseVersion := "0.21"
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.4.4"
+Global / sbtVersion := "1.5.4"
 
-ThisBuild / crossScalaVersions := Seq("2.12.12")
+ThisBuild / crossScalaVersions := Seq("2.12.14")
 
 ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Run(
@@ -49,7 +49,7 @@ lazy val core = project
   .in(file("core"))
   .settings(name := "sbt-spiewak")
   .settings(
-    libraryDependencies += "org.specs2" %% "specs2-core" % "4.10.5" % Test,
+    libraryDependencies += "org.specs2" %% "specs2-core" % "4.12.3" % Test,
 
     scriptedLaunchOpts ++= Seq("-Dplugin.version=" + version.value),
     scriptedBufferLog := true)
