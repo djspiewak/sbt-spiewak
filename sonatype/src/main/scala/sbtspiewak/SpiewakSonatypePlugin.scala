@@ -22,15 +22,27 @@ import xerial.sbt.Sonatype, Sonatype.autoImport._
 
 object SpiewakSonatypePlugin extends AutoPlugin {
 
+  object autoImport {
+    lazy val sonatypeBundleReleaseIfRelevant = taskKey[Unit]("A wrapper around the `sonatypeBundleRelease` task which checks to ensure this is not a snapshot")
+  }
+
+  import autoImport._
+
   override def requires = SpiewakPlugin && Sonatype
 
   override def trigger = allRequirements
 
   override def buildSettings =
-    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssuesIfRelevant; +publishIfRelevant; sonatypeBundleRelease")
+    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssuesIfRelevant; +publishIfRelevant; sonatypeBundleReleaseIfRelevant")
 
   override def projectSettings = Seq(
     publishMavenStyle := true,    // we want to do this unconditionally, even if publishing a plugin
     sonatypeProfileName := organization.value,
-    publishTo := sonatypePublishToBundle.value)
+    publishTo := sonatypePublishToBundle.value,
+    sonatypeBundleReleaseIfRelevant := Def.taskDyn[Unit] {
+      if (!isSnapshot.value)
+        Def.task(sonatypeBundleRelease.value)
+      else
+        Def.task(())
+    })
 }
