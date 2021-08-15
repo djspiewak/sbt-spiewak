@@ -25,7 +25,7 @@ Global / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 Global / baseVersion := "0.21"
 
 Global / sbtPlugin := true
-Global / sbtVersion := "1.5.4"
+Global / sbtVersion := "1.5.5"
 
 ThisBuild / crossScalaVersions := Seq("2.12.14")
 
