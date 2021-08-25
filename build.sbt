@@ -22,7 +22,7 @@ Global / publishGithubUser := "djspiewak"
 Global / publishFullName := "Daniel Spiewak"
 Global / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 
-Global / baseVersion := "0.21"
+Global / baseVersion := "0.22"
 
 Global / sbtPlugin := true
 Global / sbtVersion := "1.5.5"
