@@ -354,7 +354,9 @@ object SpiewakPlugin extends AutoPlugin {
       },
 
       scalacOptions ++= {
-        if (isDotty.value)
+        if (isDotty.value && crossScalaVersions.value.forall(_.startsWith("3.")))
+          Seq("-Ykind-projector:underscores")
+        else if (isDotty.value)
           Seq("-language:implicitConversions", "-Ykind-projector", "-source:3.0-migration")
         else
           Seq("-language:_")
