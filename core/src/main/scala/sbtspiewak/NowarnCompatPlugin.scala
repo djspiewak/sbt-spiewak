@@ -34,7 +34,7 @@ object NowarnCompatPlugin extends AutoPlugin {
 
   override def globalSettings = Seq(
     nowarnCompatSilencerVersion := "1.7.5",
-    nowarnCompatAnnotationProvider := Some("org.scala-lang.modules" %% "scala-collection-compat" % "2.4.4"),
+    nowarnCompatAnnotationProvider := Some("org.scala-lang.modules" %% "scala-collection-compat" % "2.5.0"),
   )
 
   override def projectSettings = Seq(
