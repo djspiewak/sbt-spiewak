@@ -136,10 +136,10 @@ Check [sbt-bintray credentials](https://github.com/sbt/sbt-bintray#Credentials) 
 You will additionally need to define the following settings:
 
 ```sbt
-ThisBuild / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak")),
+ThisBuild / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 
 ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewak"),
-  "git@github.com:djspiewak/sbt-spiewak.git")))
+  "git@github.com:djspiewak/sbt-spiewak.git"))
 ```
 
 ## Defaults Which You May Wish to Override...

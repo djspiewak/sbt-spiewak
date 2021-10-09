@@ -6,6 +6,7 @@ target/
 # Ignore [ce]tags files
 tags
 
+/.idea
 /.bsp/
 /.bloop/
 /.metals/
