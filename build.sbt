@@ -27,7 +27,7 @@ Global / baseVersion := "0.22"
 Global / sbtPlugin := true
 Global / sbtVersion := "1.5.5"
 
-ThisBuild / crossScalaVersions := Seq("2.12.15")
+ThisBuild / crossScalaVersions := Seq("2.13.7")
 
 ThisBuild / githubWorkflowBuildPreamble +=
   WorkflowStep.Run(
