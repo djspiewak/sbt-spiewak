@@ -90,7 +90,7 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
   + coursier
   + sbt-travisci
   + sbt-git
-    * With sane git versioning settings
+    * With sensible git versioning settings
     * Also with fixed `git-status` stuff
   + sbt-header
     * Assumes Apache 2.0 license
@@ -106,7 +106,7 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
     * `unusedCompileDependenciesTest` runs on `ci`
     * disabled by `NoPublishPlugin`
     * filters Scala.js and Dotty standard libraries
-- Sane scalac settings
+- Sensibly opinionated scalac settings
   + Including `-Ybackend-parallelism` where supported
 - SI-2712 fix across scala versions (dating back to 2.10)
 - kind-projector (Scala 2 only)
@@ -144,7 +144,7 @@ ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewa
 
 ## Defaults Which You May Wish to Override...
 
-You may consider overriding any of the following keys, which are hard-coded to defaults that I believe are sane:
+You may consider overriding any of the following keys, which are hard-coded to defaults that I believe are reasonable:
 
 - `licenses` (defaults to Apache 2.0)
 - `developers` (defaults to just yourself, using the `publishFullName` and `publishGithubUser`)
