@@ -119,10 +119,10 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
 You will need to define the following settings:
 
 ```sbt
-ThisBuild / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak")),
+ThisBuild / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak"))
 
 ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/djspiewak/sbt-spiewak"),
-  "git@github.com:djspiewak/sbt-spiewak.git")))
+  "git@github.com:djspiewak/sbt-spiewak.git"))
 ```
 
 ## Defaults Which You May Wish to Override...
