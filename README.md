@@ -1,8 +1,8 @@
-# sbt-spiewak [![Download](https://api.bintray.com/packages/djspiewak/sbt-plugins/sbt-spiewak/images/download.svg)](https://bintray.com/djspiewak/sbt-plugins/sbt-spiewak/_latestVersion)
+# sbt-spiewak
 
 This plugin basically just exists to allow me to more conveniently setup my baseline SBT configuration, which has evolved somewhat over the years, and is also becoming quite unwieldy when solely represented in [giter8 format](https://github.com/djspiewak/base.g8). If you want to use this plugin with a *new* project, you should probably start from that template.
 
-If you generally agree with my opinions on how projects should be set up, though, then this is probably a really excellent plugin to base on! Between this plugin and my giter8 template, you can get a new Scala project up and running and publishing to Bintray or Sonatype within about five minutes. As an example, check out this quick screencast:
+If you generally agree with my opinions on how projects should be set up, though, then this is probably a really excellent plugin to base on! Between this plugin and my giter8 template, you can get a new Scala project up and running and publishing to Sonatype within about five minutes. As an example, check out this quick screencast:
 
 [![sbt-spiewak demo](https://img.youtube.com/vi/SjcMKHpY1WU/0.jpg)](https://www.youtube.com/watch?v=SjcMKHpY1WU)
 
@@ -15,9 +15,6 @@ Put one of the following into your `plugins.sbt`:
 ```sbt
 // for stock functionality (no publication defaults)
 addSbtPlugin("com.codecommit" % "sbt-spiewak" % "<version>")
-
-// publishing to bintray
-addSbtPlugin("com.codecommit" % "sbt-spiewak-bintray" % "<version>")
 
 // publishing to sonatype
 addSbtPlugin("com.codecommit" % "sbt-spiewak-sonatype" % "<version>")
@@ -40,7 +37,7 @@ If you have a multi-module build and need a subproject to *not* publish (as is c
 
 ```sbt
 lazy val root = project
-  .aggregate(core, bintray, sonatype)
+  .aggregate(core, sonatype)
   .in(file("."))
   .settings(name := "root")
   .enablePlugins(NoPublishPlugin)
@@ -94,9 +91,7 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
     * Also with fixed `git-status` stuff
   + sbt-header
     * Assumes Apache 2.0 license
-  + sbt-bintray (or sonatype!)
-    * With fixed support for Travis builds
-  + sbt-sonatype (or bintray!)
+  + sbt-sonatype
     * With fixed snapshot publication URLs
   + sbt-gpg
   + sbt-mima
@@ -112,28 +107,16 @@ With all of these steps out of the way, you should have some nice, reliable, CI-
 - kind-projector (Scala 2 only)
 - better-monadic-for (Scala 2 only)
 - `release` and `ci` command aliases
-  + Ensures bintray package existence
   + Performs sonatype release steps
-  + Stages through `bintrayRelease` to allow release atomicity
 - `NowarnCompatPlugin`
   + Adds support for `@nowarn` to Scala 2.11, 2.12, and 2.13.1 via Silencer.
   + Adds scala-collection-compat to the classpath for versions that need Silencer. Opt out by configuring `nowarnCompatAnnotationProvider`.
 - `SonatypeCiReleasePlugin`
   + Prescriptive defaults for projects which want CI releases
 
-### Bintray Requirements
-
-You will need to additionally define the following setting:
-
-```sbt
-Global / bintrayVcsUrl := Some("git@github.com:you/your-repo.git")
-```
-
-Check [sbt-bintray credentials](https://github.com/sbt/sbt-bintray#Credentials) on how to authenticate.
-
 ### Sonatype Requirements
 
-You will additionally need to define the following settings:
+You will need to define the following settings:
 
 ```sbt
 ThisBuild / homepage := Some(url("https://github.com/djspiewak/sbt-spiewak")),
