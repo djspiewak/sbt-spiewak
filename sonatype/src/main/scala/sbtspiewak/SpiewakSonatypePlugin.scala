@@ -27,10 +27,24 @@ object SpiewakSonatypePlugin extends AutoPlugin {
   override def trigger = allRequirements
 
   override def buildSettings =
-    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssuesIfRelevant; +publishIfRelevant; sonatypeBundleRelease")
+    addCommandAlias("release", "; reload; project /; +mimaReportBinaryIssuesIfRelevant; +publishIfRelevant; sonatypeBundleReleaseIfRelevant")
 
   override def projectSettings = Seq(
     publishMavenStyle := true,    // we want to do this unconditionally, even if publishing a plugin
     sonatypeProfileName := organization.value,
-    publishTo := sonatypePublishToBundle.value)
+    publishTo := sonatypePublishToBundle.value,
+    commands += sonatypeBundleReleaseIfRelevant
+  )
+
+  private def sonatypeBundleReleaseIfRelevant: Command =
+    Command.command("sonatypeBundleReleaseIfRelevant") { state =>
+      val isSnap = state.getSetting(isSnapshot).getOrElse(false)
+      if (!isSnap) {
+        import sbt.complete.Parser
+        Parser.parse("sonatypeBundleRelease", state.combinedParser) match {
+          case Right(cmd) => cmd()
+          case Left(msg) => sys.error(msg)
+        }
+      } else state
+    }
 }
