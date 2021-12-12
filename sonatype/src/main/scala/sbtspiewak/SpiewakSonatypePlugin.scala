@@ -39,12 +39,9 @@ object SpiewakSonatypePlugin extends AutoPlugin {
   private def sonatypeBundleReleaseIfRelevant: Command =
     Command.command("sonatypeBundleReleaseIfRelevant") { state =>
       val isSnap = state.getSetting(isSnapshot).getOrElse(false)
-      if (!isSnap) {
-        import sbt.complete.Parser
-        Parser.parse("sonatypeBundleRelease", state.combinedParser) match {
-          case Right(cmd) => cmd()
-          case Left(msg) => sys.error(msg)
-        }
-      } else state
+      if (!isSnap)
+        Command.process("sonatypeBundleRelease", state)
+      else
+        state
     }
 }
