@@ -69,6 +69,7 @@ object SpiewakPlugin extends AutoPlugin {
     lazy val testIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
     lazy val mimaReportBinaryIssuesIfRelevant = taskKey[Unit]("A wrapper around the `test` task which checks to ensure the current scalaVersion is in crossScalaVersions")
 
+    lazy val publishSnapshotsAsHashReleases = settingKey[Boolean]("Overrides the snapshot releases and switches to stable hash releases instead")
     lazy val publishIfRelevant = taskKey[Unit]("A wrapper around the `publish` task which checks to ensure the current scalaVersion is in crossScalaVersions")
     lazy val publishLocalIfRelevant = taskKey[Unit]("A wrapper around the `publishLocal` task which checks to ensure the current scalaVersion is in crossScalaVersions")
 
@@ -180,8 +181,14 @@ object SpiewakPlugin extends AutoPlugin {
         }
       },
 
+      publishSnapshotsAsHashReleases := false,
       git.formattedShaVersion := {
-        val suffix = git.makeUncommittedSignifierSuffix(git.gitUncommittedChanges.value, git.uncommittedSignifier.value)
+        val hashOverride = publishSnapshotsAsHashReleases.value
+        val condition =
+          if (hashOverride) git.gitUncommittedChanges.value // old sbt-spiewak behavior
+          else git.gitCurrentTags.value.isEmpty || git.gitUncommittedChanges.value // default sbt-git behavior
+
+        val suffix = git.makeUncommittedSignifierSuffix(condition, git.uncommittedSignifier.value)
 
         val description = Try("git describe --tags --match v*".!!.trim).toOption
         val optDistance = description collect {
@@ -198,7 +205,10 @@ object SpiewakPlugin extends AutoPlugin {
       git.gitUncommittedChanges := Try("git status -s".!!.trim.length > 0).getOrElse(true),
 
       git.gitHeadCommit := Try("git rev-parse HEAD".!!.trim).toOption,
-      git.gitCurrentTags := Try("git tag --contains HEAD".!!.trim.split("\\s+").toList.filter(_ != "")).toOption.toList.flatten)
+      git.gitCurrentTags := Try("git tag --contains HEAD".!!.trim.split("\\s+").toList.filter(_ != "")).toOption.toList.flatten,
+
+      commands += publishHashIfRelevant
+    )
 
   override def projectSettings =
     AutomateHeaderPlugin.projectSettings ++
@@ -237,6 +247,7 @@ object SpiewakPlugin extends AutoPlugin {
       mimaReportBinaryIssuesIfRelevant := filterTaskWhereRelevant(mimaReportBinaryIssues).value,
       publishIfRelevant := filterTaskWhereRelevant(publish).value,
       publishLocalIfRelevant := filterTaskWhereRelevant(publishLocal).value,
+      SbtGpg.autoImport.gpgWarnOnFailure := isSnapshot.value,
 
       libraryDependencies ++= {
         if (isDotty.value)
@@ -531,4 +542,19 @@ object SpiewakPlugin extends AutoPlugin {
       unusedCompileDependenciesFilter -=
         moduleFilter("org.scala-js", "scalajs-library*") |
         moduleFilter("org.scala-lang", "scala3-library*"))
+
+  private def publishHashIfRelevant: Command =
+    Command.command("publishHashIfRelevant") { state1 =>
+      val cross = state1.setting(crossScalaVersions)
+      val ver = state1.setting(scalaVersion)
+
+      if (cross.contains(ver)) {
+        val old = state1.setting(publishSnapshotsAsHashReleases)
+        val state2 = state1.appendWithSession(Seq(ThisBuild / publishSnapshotsAsHashReleases := true))
+        val state3 = Command.process("publishIfRelevant", state2)
+        state3.appendWithSession(Seq(ThisBuild / publishSnapshotsAsHashReleases := old))
+      } else {
+        state1
+      }
+    }
 }

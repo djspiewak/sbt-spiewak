@@ -24,6 +24,7 @@ object SonatypeCiReleasePlugin extends AutoPlugin {
 
   object autoImport {
     lazy val spiewakCiReleaseSnapshots = settingKey[Boolean]("Controls whether or not snapshots should be released on main (default: false)")
+    lazy val spiewakCiReleaseTags = settingKey[Boolean]("Controls whether or not tags should be released on main (default: true)")
     lazy val spiewakMainBranches = settingKey[Seq[String]]("The primary branch(es) for your repository (default: [])")
   }
 
@@ -35,6 +36,7 @@ object SonatypeCiReleasePlugin extends AutoPlugin {
 
   override def globalSettings = Seq(
     spiewakCiReleaseSnapshots := false,
+    spiewakCiReleaseTags := true,
     spiewakMainBranches := Seq())
 
   override def buildSettings = Seq(
@@ -54,11 +56,49 @@ object SonatypeCiReleasePlugin extends AutoPlugin {
 
     githubWorkflowTargetTags += "v*",
 
-  githubWorkflowPublishPreamble +=
-    WorkflowStep.Run(
-      List("echo $PGP_SECRET | base64 -d | gpg --import"),
-      name = Some("Import signing key")
-    ),
+  githubWorkflowPublishPreamble ++= {
+    if (spiewakCiReleaseSnapshots.value && SpiewakPlugin.autoImport.publishSnapshotsAsHashReleases.value && !spiewakCiReleaseTags.value) {
+      // Case where we're only releasing hash releases and no tagged releases.
+      Seq(
+        WorkflowStep.Run(
+          List("echo $PGP_SECRET | base64 -d | gpg --import"),
+          cond = Some("github.ref_type != 'tag'"),
+          name = Some("Import signing key")
+        )
+      )
+    } else if (spiewakCiReleaseSnapshots.value && SpiewakPlugin.autoImport.publishSnapshotsAsHashReleases.value && spiewakCiReleaseTags.value) {
+      // Case where we're releasing hash releases and tagged releases.
+      Seq(
+        WorkflowStep.Run(
+          List("echo $PGP_SECRET | base64 -d | gpg --import"),
+          name = Some("Import signing key")
+        )
+      )
+    } else if (spiewakCiReleaseSnapshots.value && spiewakCiReleaseTags.value) {
+      // Case where we have tagged releases and SNAPSHOT releases, with the PGP import happening only for tagged
+      // releases.
+      Seq(
+        WorkflowStep.Run(
+          List("echo $PGP_SECRET | base64 -d | gpg --import"),
+          cond = Some("github.ref_type == 'tag'"),
+          name = Some("Import signing key")
+        )
+      )
+    } else if (!spiewakCiReleaseSnapshots.value && spiewakCiReleaseTags.value) {
+      // Case where we're releasing only tagged releases.
+      Seq(
+        WorkflowStep.Run(
+          List("echo $PGP_SECRET | base64 -d | gpg --import"),
+          name = Some("Import signing key")
+        )
+      )
+    } else {
+      // Only releasing SNAPSHOTS, so importing PGP keys is not necessary at all.
+      Seq()
+    }
+  },
 
+  // Add the release step unconditionally as all release types need it,
+  // otherwise the plugin wouldn't have been enabled at all.
   githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("release"))))
 }

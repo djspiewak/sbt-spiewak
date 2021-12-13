@@ -5,6 +5,8 @@ ThisBuild / baseVersion := "0.2"
 ThisBuild / publishGithubUser := "djspiewak"
 ThisBuild / publishFullName := "Daniel Spiewak"
 
+ThisBuild / publishSnapshotsAsHashReleases := true
+
 lazy val setup1 = taskKey[Unit]("")
 lazy val check1 = taskKey[Unit]("")
 
