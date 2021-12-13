@@ -37,11 +37,25 @@ object SpiewakSonatypePlugin extends AutoPlugin {
   )
 
   private def sonatypeBundleReleaseIfRelevant: Command =
-    Command.command("sonatypeBundleReleaseIfRelevant") { state =>
-      val isSnap = state.getSetting(isSnapshot).getOrElse(false)
+    Command.command("sonatypeBundleReleaseIfRelevant") { state1 =>
+      val isSnap = state1.getSetting(isSnapshot).getOrElse(false)
       if (!isSnap)
-        Command.process("sonatypeBundleRelease", state)
-      else
-        state
+        Command.process("sonatypeBundleRelease", state1)
+      else {
+        // Check for a published hash version.
+        val ver = state1.setting(ThisBuild / version)
+        val nonSnap = ver.replace("-SNAPSHOT", "")
+        val base = state1.setting(ThisBuild / baseDirectory)
+        val hashDirectory = base / "target" / "sonatype-staging" / nonSnap
+        if (hashDirectory.exists()) {
+          // A hash release exists. Release it.
+          val state2 = state1.appendWithSession(Seq((ThisBuild / version) := nonSnap))
+          val state3 = Command.process("sonatypeBundleRelease", state2)
+          state3.appendWithSession(Seq((ThisBuild / version) := ver))
+        } else {
+          // Do nothing.
+          state1
+        }
+      }
     }
 }
