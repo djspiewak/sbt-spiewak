@@ -247,6 +247,7 @@ object SpiewakPlugin extends AutoPlugin {
       mimaReportBinaryIssuesIfRelevant := filterTaskWhereRelevant(mimaReportBinaryIssues).value,
       publishIfRelevant := filterTaskWhereRelevant(publish).value,
       publishLocalIfRelevant := filterTaskWhereRelevant(publishLocal).value,
+      SbtGpg.autoImport.gpgWarnOnFailure := isSnapshot.value,
 
       libraryDependencies ++= {
         if (isDotty.value)
