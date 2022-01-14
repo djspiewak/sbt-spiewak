@@ -49,7 +49,7 @@ lazy val core = project
   .in(file("core"))
   .settings(name := "sbt-spiewak")
   .settings(
-    libraryDependencies += "org.specs2" %% "specs2-core" % "4.13.1" % Test,
+    libraryDependencies += "org.specs2" %% "specs2-core" % "4.13.2" % Test,
 
     scriptedLaunchOpts ++= Seq("-Dplugin.version=" + version.value),
     scriptedBufferLog := true)
